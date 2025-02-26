@@ -15,28 +15,35 @@ public class AdministratorRepository : IAdministratorRepository
         _context = context;
     }
 
-    public Task<Administrators> GetAdminById(Guid adminId)
+    public async Task<Administrators> GetAdminById(Guid adminId)
     {
-        throw new NotImplementedException();
+        return await Administrators.FirstOrDefaultAsync(a => a.Id == adminId);
     }
 
-    public Task<Administrators> GetAdminByEmail(string email)
+    public async Task<Administrators> GetAdminByEmail(string email)
     {
-        throw new NotImplementedException();
+        return await Administrators.FirstOrDefaultAsync(a => a.Email == email);
     }
 
-    public Task<Administrators> CreateAdmin(Administrators admin)
+    public async Task<Administrators> CreateAdmin(Administrators admin)
     {
-        throw new NotImplementedException();
+        await Administrators.AddAsync(admin);
+        await _context.SaveChangesAsync();
+
+        return admin;
     }
 
-    public Task UpdateAdmin(Administrators admin)
+    public async Task UpdateAdmin(Administrators admin)
     {
-        throw new NotImplementedException();
+        Administrators.Update(admin);
+        await _context.SaveChangesAsync();
     }
 
-    public Task DeleteAdmin(Guid adminId)
+    public async Task DeleteAdmin(Guid adminId)
     {
-        throw new NotImplementedException();
+        var admin = await GetAdminById(adminId);
+
+        Administrators.Remove(admin);
+        await _context.SaveChangesAsync();
     }
 }

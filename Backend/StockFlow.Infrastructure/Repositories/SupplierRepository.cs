@@ -15,28 +15,35 @@ public class SupplierRepository : ISupplierRepository
         _context = context;
     }
 
-    public Task<IEnumerable<Suppliers>> GetSuppliers()
+    public async Task<IEnumerable<Suppliers>> GetSuppliers()
     {
-        throw new NotImplementedException();
+        return await Suppliers.ToListAsync();
     }
 
-    public Task<Suppliers> GetSupplierById(Guid supplierId)
+    public async Task<Suppliers> GetSupplierById(Guid supplierId)
     {
-        throw new NotImplementedException();
+        return await Suppliers.FirstOrDefaultAsync(sp => sp.Id == supplierId);
     }
 
-    public Task<Suppliers> CreateSupplier(Suppliers supplier)
+    public async Task<Suppliers> CreateSupplier(Suppliers supplier)
     {
-        throw new NotImplementedException();
+        await Suppliers.AddAsync(supplier);
+        await _context.SaveChangesAsync();
+
+        return supplier;
     }
 
-    public Task UpdateSupplier(Suppliers supplier)
+    public async Task UpdateSupplier(Suppliers supplier)
     {
-        throw new NotImplementedException();
+        Suppliers.Update(supplier);
+        await _context.SaveChangesAsync();
     }
 
-    public Task DeleteSupplier(Guid supplierId)
+    public async Task DeleteSupplier(Guid supplierId)
     {
-        throw new NotImplementedException();
+        var supplier = await GetSupplierById(supplierId);
+
+        Suppliers.Remove(supplier);
+        await _context.SaveChangesAsync();
     }
 }

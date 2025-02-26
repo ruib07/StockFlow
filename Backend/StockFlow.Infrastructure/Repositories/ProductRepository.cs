@@ -15,33 +15,40 @@ public class ProductRepository : IProductRepository
         _context = context;
     }
 
-    public Task<IEnumerable<Products>> GetProducts()
+    public async Task<IEnumerable<Products>> GetProducts()
     {
-        throw new NotImplementedException();
+        return await Products.ToListAsync();
     }
 
-    public Task<Products> GetProductById(Guid productId)
+    public async Task<Products> GetProductById(Guid productId)
     {
-        throw new NotImplementedException();
+        return await Products.FirstOrDefaultAsync(p => p.Id == productId);
     }
 
-    public Task<IEnumerable<Products>> GetProductsByCategoryId(Guid categoryId)
+    public async Task<IEnumerable<Products>> GetProductsByCategoryId(Guid categoryId)
     {
-        throw new NotImplementedException();
+        return await Products.AsNoTracking().Where(p => p.CategoryId == categoryId).ToListAsync();
     }
 
-    public Task<Products> CreateProduct(Products product)
+    public async Task<Products> CreateProduct(Products product)
     {
-        throw new NotImplementedException();
+        await Products.AddAsync(product);
+        await _context.SaveChangesAsync();
+
+        return product;
     }
 
-    public Task UpdateProduct(Products product)
+    public async Task UpdateProduct(Products product)
     {
-        throw new NotImplementedException();
+        Products.Update(product);
+        await _context.SaveChangesAsync();
     }
 
-    public Task DeleteProduct(Guid productId)
+    public async Task DeleteProduct(Guid productId)
     {
-        throw new NotImplementedException();
+        var product = await GetProductById(productId);
+
+        Products.Remove(product);
+        await _context.SaveChangesAsync();
     }
 }

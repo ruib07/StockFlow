@@ -15,28 +15,35 @@ public class CategoryRepository : ICategoryRepository
         _context = context;
     }
 
-    public Task<IEnumerable<Categories>> GetCategories()
+    public async Task<IEnumerable<Categories>> GetCategories()
     {
-        throw new NotImplementedException();
+        return await Categories.ToListAsync();
     }
 
-    public Task<Categories> GetCategoryById(Guid categoryId)
+    public async Task<Categories> GetCategoryById(Guid categoryId)
     {
-        throw new NotImplementedException();
+        return await Categories.FirstOrDefaultAsync(c => c.Id == categoryId);
     }
 
-    public Task<Categories> CreateCategory(Categories category)
+    public async Task<Categories> CreateCategory(Categories category)
     {
-        throw new NotImplementedException();
+        await Categories.AddAsync(category);
+        await _context.SaveChangesAsync();
+
+        return category;
     }
 
-    public Task UpdateCategory(Categories category)
+    public async Task UpdateCategory(Categories category)
     {
-        throw new NotImplementedException();
+        Categories.Update(category);
+        await _context.SaveChangesAsync();
     }
 
-    public Task DeleteCategory(Guid categoryId)
+    public async Task DeleteCategory(Guid categoryId)
     {
-        throw new NotImplementedException();
+        var category = await GetCategoryById(categoryId);
+
+        Categories.Remove(category);
+        await _context.SaveChangesAsync();
     }
 }

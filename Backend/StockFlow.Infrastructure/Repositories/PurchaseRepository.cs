@@ -15,28 +15,35 @@ public class PurchaseRepository : IPurchaseRepository
         _context = context;
     }
 
-    public Task<IEnumerable<Purchases>> GetPurchases()
+    public async Task<IEnumerable<Purchases>> GetPurchases()
     {
-        throw new NotImplementedException();
+        return await Purchases.ToListAsync();
     }
 
-    public Task<Purchases> GetPurchaseById(Guid purchaseId)
+    public async Task<Purchases> GetPurchaseById(Guid purchaseId)
     {
-        throw new NotImplementedException();
+        return await Purchases.FirstOrDefaultAsync(p => p.Id == purchaseId);
     }
 
-    public Task<Purchases> CreatePurchase(Purchases purchases)
+    public async Task<Purchases> CreatePurchase(Purchases purchase)
     {
-        throw new NotImplementedException();
+        await Purchases.AddAsync(purchase);
+        await _context.SaveChangesAsync();
+
+        return purchase;
     }
 
-    public Task UpdatePurchase(Purchases purchases)
+    public async Task UpdatePurchase(Purchases purchase)
     {
-        throw new NotImplementedException();
+        Purchases.Update(purchase);
+        await _context.SaveChangesAsync();
     }
 
-    public Task DeletePurchase(Guid purchaseId)
+    public async Task DeletePurchase(Guid purchaseId)
     {
-        throw new NotImplementedException();
+        var purchase = await GetPurchaseById(purchaseId);
+
+        Purchases.Remove(purchase);
+        await _context.SaveChangesAsync();
     }
 }

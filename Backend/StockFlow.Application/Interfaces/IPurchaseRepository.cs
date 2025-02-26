@@ -6,7 +6,7 @@ public interface IPurchaseRepository
 {
     Task<IEnumerable<Purchases>> GetPurchases();
     Task<Purchases> GetPurchaseById(Guid purchaseId);
-    Task<Purchases> CreatePurchase(Purchases purchases);
-    Task UpdatePurchase(Purchases purchases);
+    Task<Purchases> CreatePurchase(Purchases purchase);
+    Task UpdatePurchase(Purchases purchase);
     Task DeletePurchase(Guid purchaseId);
 }

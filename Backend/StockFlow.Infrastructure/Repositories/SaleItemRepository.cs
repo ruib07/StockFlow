@@ -15,23 +15,35 @@ public class SaleItemRepository : ISaleItemRepository
         _context = context;
     }
 
-    public Task<IEnumerable<SaleItems>> GetSaleItemsBySaleId(Guid saleId)
+    public async Task<SaleItems> GetSaleItemById(Guid saleItemId)
     {
-        throw new NotImplementedException();
+        return await SaleItems.FirstOrDefaultAsync(si => si.Id == saleItemId);
     }
 
-    public Task<SaleItems> CreateSaleItem(SaleItems item)
+    public async Task<IEnumerable<SaleItems>> GetSaleItemsBySaleId(Guid saleId)
     {
-        throw new NotImplementedException();
+        return await SaleItems.AsNoTracking().Where(si => si.SaleId == saleId).ToListAsync();
     }
 
-    public Task UpdateSaleItem(SaleItems item)
+    public async Task<SaleItems> CreateSaleItem(SaleItems saleItem)
     {
-        throw new NotImplementedException();
+        await SaleItems.AddAsync(saleItem);
+        await _context.SaveChangesAsync();
+
+        return saleItem;
     }
 
-    public Task DeleteSaleItem(Guid saleItemId)
+    public async Task UpdateSaleItem(SaleItems saleItem)
     {
-        throw new NotImplementedException();
+        SaleItems.Update(saleItem);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DeleteSaleItem(Guid saleItemId)
+    {
+        var saleItem = await GetSaleItemById(saleItemId);
+
+        SaleItems.Remove(saleItem);
+        await _context.SaveChangesAsync();
     }
 }

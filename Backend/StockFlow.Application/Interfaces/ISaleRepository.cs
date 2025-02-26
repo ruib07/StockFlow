@@ -6,7 +6,7 @@ public interface ISaleRepository
 {
     Task<IEnumerable<Sales>> GetSales();
     Task<Sales> GetSaleById(Guid saleId);
-    Task<Sales> CreateSale(Sales sales);
-    Task UpdateSale(Sales sales);
+    Task<Sales> CreateSale(Sales sale);
+    Task UpdateSale(Sales sale);
     Task DeleteSale(Guid saleId);
 }

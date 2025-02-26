@@ -15,23 +15,35 @@ public class PurchaseItemRepository : IPurchaseItemRepository
         _context = context;
     }
 
-    public Task<IEnumerable<PurchaseItems>> GetPurchaseItemsByPurchaseId(Guid purchaseId)
+    public async Task<PurchaseItems> GetPurchaseItemById(Guid purchaseItemId)
     {
-        throw new NotImplementedException();
+        return await PurchaseItems.FirstOrDefaultAsync(pi => pi.Id == purchaseItemId);
     }
 
-    public Task<PurchaseItems> CreatePurchaseItem(PurchaseItems purchaseItem)
+    public async Task<IEnumerable<PurchaseItems>> GetPurchaseItemsByPurchaseId(Guid purchaseId)
     {
-        throw new NotImplementedException();
+        return await PurchaseItems.AsNoTracking().Where(pi => pi.PurchaseId == purchaseId).ToListAsync();
     }
 
-    public Task UpdatePurchaseItem(PurchaseItems purchaseItem)
+    public async Task<PurchaseItems> CreatePurchaseItem(PurchaseItems purchaseItem)
     {
-        throw new NotImplementedException();
+        await PurchaseItems.AddAsync(purchaseItem);
+        await _context.SaveChangesAsync();
+
+        return purchaseItem;
     }
 
-    public Task DeletePurchaseItem(Guid purchaseItemId)
+    public async Task UpdatePurchaseItem(PurchaseItems purchaseItem)
     {
-        throw new NotImplementedException();
+        PurchaseItems.Update(purchaseItem);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DeletePurchaseItem(Guid purchaseItemId)
+    {
+        var purchaseItem = await GetPurchaseItemById(purchaseItemId);
+
+        PurchaseItems.Remove(purchaseItem);
+        await _context.SaveChangesAsync();
     }
 }

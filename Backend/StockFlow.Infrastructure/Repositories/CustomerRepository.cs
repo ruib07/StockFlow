@@ -15,33 +15,40 @@ public class CustomerRepository : ICustomerRepository
         _context = context;
     }
 
-    public Task<IEnumerable<Customers>> GetCustomers()
+    public async Task<IEnumerable<Customers>> GetCustomers()
     {
-        throw new NotImplementedException();
+        return await Customers.ToListAsync();
     }
 
-    public Task<Customers> GetCustomerById(Guid customerId)
+    public async Task<Customers> GetCustomerById(Guid customerId)
     {
-        throw new NotImplementedException();
+        return await Customers.FirstOrDefaultAsync(c => c.Id == customerId);
     }
 
-    public Task<Customers> GetCustomerByEmail(string email)
+    public async Task<Customers> GetCustomerByEmail(string email)
     {
-        throw new NotImplementedException();
+        return await Customers.FirstOrDefaultAsync(c => c.Email == email);
     }
 
-    public Task<Customers> CreateCustomer(Customers customer)
+    public async Task<Customers> CreateCustomer(Customers customer)
     {
-        throw new NotImplementedException();
+        await Customers.AddAsync(customer);
+        await _context.SaveChangesAsync();
+
+        return customer;
     }
 
-    public Task UpdateCustomer(Customers customer)
+    public async Task UpdateCustomer(Customers customer)
     {
-        throw new NotImplementedException();
+        Customers.Update(customer);
+        await _context.SaveChangesAsync();  
     }
 
-    public Task DeleteCustomer(Guid customerId)
+    public async Task DeleteCustomer(Guid customerId)
     {
-        throw new NotImplementedException();
+        var customer = await GetCustomerById(customerId);
+
+        Customers.Remove(customer);
+        await _context.SaveChangesAsync();
     }
 }

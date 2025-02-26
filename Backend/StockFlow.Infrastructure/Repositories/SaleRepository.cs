@@ -15,28 +15,35 @@ public class SaleRepository : ISaleRepository
         _context = context;
     }
 
-    public Task<IEnumerable<Sales>> GetSales()
+    public async Task<IEnumerable<Sales>> GetSales()
     {
-        throw new NotImplementedException();
+        return await Sales.ToListAsync();
     }
 
-    public Task<Sales> GetSaleById(Guid saleId)
+    public async Task<Sales> GetSaleById(Guid saleId)
     {
-        throw new NotImplementedException();
+        return await Sales.FirstOrDefaultAsync(s => s.Id == saleId);
     }
 
-    public Task<Sales> CreateSale(Sales sales)
+    public async Task<Sales> CreateSale(Sales sale)
     {
-        throw new NotImplementedException();
+        await Sales.AddAsync(sale);
+        await _context.SaveChangesAsync();
+
+        return sale;
     }
 
-    public Task UpdateSale(Sales sales)
+    public async Task UpdateSale(Sales sale)
     {
-        throw new NotImplementedException();
+        Sales.Update(sale);
+        await _context.SaveChangesAsync();
     }
 
-    public Task DeleteSale(Guid saleId)
+    public async Task DeleteSale(Guid saleId)
     {
-        throw new NotImplementedException();
+        var sale = await GetSaleById(saleId);
+
+        Sales.Remove(sale);
+        await _context.SaveChangesAsync();
     }
 }
