@@ -364,3 +364,4 @@ FodyWeavers.xsd
 /Backend/StockFlow.Server/appsettings.json
 /Backend/StockFlow.Infrastructure/Migrations/20250226121804_StockFlowInitialDb.cs
 /Backend/StockFlow.Infrastructure/Migrations/ApplicationDbContextModelSnapshot.cs
+/Backend/StockFlow.Infrastructure/Migrations/20250227122122_PasswordResetTokensTable.cs
