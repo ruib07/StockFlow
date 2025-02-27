@@ -4,9 +4,9 @@ using StockFlow.Server.Middlewares;
 using StockFlow.Application.Constants;
 using StockFlow.Application.Interfaces;
 using StockFlow.Infrastructure.Repositories;
-using StockFlow.Application.Services.Email.Interfaces;
 using StockFlow.Application.Services.Email;
 using StockFlow.Application.Services;
+using StockFlow.Application.Services.Email.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
@@ -25,6 +25,7 @@ builder.Services.AddScoped<IPurchaseRepository, PurchaseRepository>();
 builder.Services.AddScoped<ISaleItemRepository, SaleItemRepository>();
 builder.Services.AddScoped<ISaleRepository, SaleRepository>();
 builder.Services.AddScoped<ISupplierRepository, SupplierRepository>();
+builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
 builder.Services.AddScoped<IEmailPasswordReset, EmailPasswordResetService>();
 
 builder.Services.AddScoped<AdministratorsService>();

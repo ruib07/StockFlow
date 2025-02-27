@@ -25,6 +25,11 @@ public class SupplierRepository : ISupplierRepository
         return await Suppliers.FirstOrDefaultAsync(sp => sp.Id == supplierId);
     }
 
+    public async Task<Suppliers> GetSupplierByEmail(string email)
+    {
+        return await Suppliers.FirstOrDefaultAsync(sp => sp.Email == email);
+    }
+
     public async Task<Suppliers> CreateSupplier(Suppliers supplier)
     {
         await Suppliers.AddAsync(supplier);

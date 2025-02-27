@@ -9,6 +9,7 @@ public class ApplicationDbContext : DbContext
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) {}
 
     public DbSet<Administrators> Administrators { get; set; }
+    public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
     public DbSet<Products> Products { get; set; }
     public DbSet<Categories> Categories { get; set; }
     public DbSet<Suppliers> Suppliers { get; set; }
