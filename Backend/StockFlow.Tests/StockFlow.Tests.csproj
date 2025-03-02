@@ -34,8 +34,11 @@
 
   <ItemGroup>
     <Folder Include="Controllers\" />
-    <Folder Include="Repositories\" />
     <Folder Include="Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\StockFlow.Infrastructure\StockFlow.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
