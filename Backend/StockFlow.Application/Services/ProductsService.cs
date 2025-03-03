@@ -31,7 +31,7 @@ public class ProductsService
     {
         var productsByCategory = await _productRepository.GetProductsByCategoryId(categoryId);
 
-        if (!productsByCategory.Any()) ErrorHelper.ThrowNotFoundException("No products found in this category!");
+        if (productsByCategory == null || !productsByCategory.Any()) ErrorHelper.ThrowNotFoundException("No products found in this category!");
 
         return productsByCategory;
     }

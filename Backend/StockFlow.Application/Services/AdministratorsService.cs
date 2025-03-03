@@ -73,7 +73,7 @@ public class AdministratorsService
         if (emailExists != null && emailExists.Id != adminId) ErrorHelper.ThrowConflictException("Email already in use!");
 
         currentAdmin.Name = updateAdmin.Name;
-        currentAdmin.Email = emailExists.Email;
+        currentAdmin.Email = updateAdmin.Email;
         currentAdmin.Password = PasswordHasherHelper.HashPassword(updateAdmin.Password);
 
         await _administratorRepository.UpdateAdmin(currentAdmin);

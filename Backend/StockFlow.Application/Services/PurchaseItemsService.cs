@@ -17,7 +17,7 @@ public class PurchaseItemsService
     {
         var purchaseItem = await _purchaseItemRepository.GetPurchaseItemById(purchaseItemId);
 
-        if (purchaseItem == null) ErrorHelper.ThrowNotFoundException("Purchase Item not found!");
+        if (purchaseItem == null) ErrorHelper.ThrowNotFoundException("Purchase item not found!");
 
         return purchaseItem;
     }
@@ -26,7 +26,7 @@ public class PurchaseItemsService
     {
         var purchaseItemByPurchase = await _purchaseItemRepository.GetPurchaseItemsByPurchaseId(purchaseId);
 
-        if (!purchaseItemByPurchase.Any()) ErrorHelper.ThrowNotFoundException("No purchase items found in this purchase!");
+        if (purchaseItemByPurchase == null || !purchaseItemByPurchase.Any()) ErrorHelper.ThrowNotFoundException("No purchase items found in this purchase!");
 
         return purchaseItemByPurchase;
     }

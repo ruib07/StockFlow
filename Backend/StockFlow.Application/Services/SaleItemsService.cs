@@ -26,7 +26,7 @@ public class SaleItemsService
     {
         var saleItemBySale = await _saleItemRepository.GetSaleItemsBySaleId(saleId);
 
-        if (!saleItemBySale.Any()) ErrorHelper.ThrowNotFoundException("No sale items found in this sale!");
+        if (saleItemBySale == null || !saleItemBySale.Any()) ErrorHelper.ThrowNotFoundException("No sale items found in this sale!");
 
         return saleItemBySale;
     }
