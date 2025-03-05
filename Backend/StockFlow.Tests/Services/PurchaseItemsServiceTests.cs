@@ -3,6 +3,7 @@ using StockFlow.Application.Helpers;
 using StockFlow.Application.Interfaces;
 using StockFlow.Application.Services;
 using StockFlow.Domain.Entities;
+using StockFlow.Tests.Templates;
 using System.Net;
 
 namespace StockFlow.Tests.Services;
@@ -23,7 +24,7 @@ public class PurchaseItemsServiceTests
     [Test]
     public async Task GetPurchaseItemById_ReturnsPurchaseItem()
     {
-        var purchaseItem = CreatePurchaseItems().First();
+        var purchaseItem = PurchaseItemsTests.CreatePurchaseItems().First();
 
         _purchaseItemRepositoryMock.Setup(repo => repo.GetPurchaseItemById(purchaseItem.Id)).ReturnsAsync(purchaseItem);
 
@@ -58,7 +59,7 @@ public class PurchaseItemsServiceTests
     [Test]
     public async Task GetPurchaseItemsByPurchaseId_ReturnsPurchaseItem()
     {
-        var purchaseItems = CreatePurchaseItems();
+        var purchaseItems = PurchaseItemsTests.CreatePurchaseItems();
         var singlePurchaseItemList = new List<PurchaseItems>() { purchaseItems[0] };
 
         _purchaseItemRepositoryMock.Setup(repo => repo.GetPurchaseItemsByPurchaseId(purchaseItems[0].PurchaseId)).ReturnsAsync(singlePurchaseItemList);
@@ -95,7 +96,7 @@ public class PurchaseItemsServiceTests
     [Test]
     public async Task CreatePurchaseItem_CreatesSuccessfully()
     {
-        var purchaseItem = CreatePurchaseItems().First();
+        var purchaseItem = PurchaseItemsTests.CreatePurchaseItems().First();
 
         _purchaseItemRepositoryMock.Setup(repo => repo.CreatePurchaseItem(purchaseItem)).ReturnsAsync(purchaseItem);
 
@@ -116,8 +117,8 @@ public class PurchaseItemsServiceTests
     [Test]
     public async Task UpdatePurchaseItem_UpdatesSuccessfully()
     {
-        var purchaseItem = CreatePurchaseItems().First();
-        var updatePurchaseItem = UpdatePurchaseItem(purchaseItem.Id, purchaseItem.PurchaseId, purchaseItem.ProductId);
+        var purchaseItem = PurchaseItemsTests.CreatePurchaseItems().First();
+        var updatePurchaseItem = PurchaseItemsTests.UpdatePurchaseItem(purchaseItem.Id, purchaseItem.PurchaseId, purchaseItem.ProductId);
 
         _purchaseItemRepositoryMock.Setup(repo => repo.CreatePurchaseItem(purchaseItem)).ReturnsAsync(purchaseItem);
         _purchaseItemRepositoryMock.Setup(repo => repo.UpdatePurchaseItem(purchaseItem)).Returns(Task.CompletedTask);
@@ -141,7 +142,7 @@ public class PurchaseItemsServiceTests
     [Test]
     public async Task DeletePurchaseItem_DeletesSuccessfully()
     {
-        var purchaseItem = CreatePurchaseItems().First();
+        var purchaseItem = PurchaseItemsTests.CreatePurchaseItems().First();
 
         _purchaseItemRepositoryMock.Setup(repo => repo.CreatePurchaseItem(purchaseItem)).ReturnsAsync(purchaseItem);
         _purchaseItemRepositoryMock.Setup(repo => repo.DeletePurchaseItem(purchaseItem.Id)).Returns(Task.CompletedTask);
@@ -158,46 +159,4 @@ public class PurchaseItemsServiceTests
             Assert.That(exception.Message, Is.EqualTo("Purchase item not found!"));
         });
     }
-
-    #region Private Methods
-
-    private static List<PurchaseItems> CreatePurchaseItems()
-    {
-        return new List<PurchaseItems>()
-        {
-            new PurchaseItems()
-            {
-                Id = Guid.NewGuid(),
-                PurchaseId = Guid.NewGuid(),
-                ProductId = Guid.NewGuid(),
-                Quantity = 1,
-                UnitPrice = 49.99m,
-                SubTotal = 49.99m
-            },
-            new PurchaseItems()
-            {
-                Id = Guid.NewGuid(),
-                PurchaseId = Guid.NewGuid(),
-                ProductId = Guid.NewGuid(),
-                Quantity = 2,
-                UnitPrice = 99.99m,
-                SubTotal = 198.98m
-            }
-        };
-    }
-
-    private static PurchaseItems UpdatePurchaseItem(Guid id, Guid purchaseId, Guid productId)
-    {
-        return new PurchaseItems()
-        {
-            Id = id,
-            PurchaseId = purchaseId,
-            ProductId = productId,
-            Quantity = 2,
-            UnitPrice = 49.99m,
-            SubTotal = 98.98m
-        };
-    }
-
-    #endregion
 }

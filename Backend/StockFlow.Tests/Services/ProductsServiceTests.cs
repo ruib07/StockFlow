@@ -3,6 +3,7 @@ using StockFlow.Application.Helpers;
 using StockFlow.Application.Interfaces;
 using StockFlow.Application.Services;
 using StockFlow.Domain.Entities;
+using StockFlow.Tests.Templates;
 using System.Net;
 
 namespace StockFlow.Tests.Services;
@@ -23,7 +24,7 @@ public class ProductsServiceTests
     [Test]
     public async Task GetProducts_ReturnsProducts()
     {
-        var products = CreateProducts();
+        var products = ProductsTests.CreateProducts();
 
         _productRepositoryMock.Setup(repo => repo.GetProducts()).ReturnsAsync(products);
 
@@ -45,7 +46,7 @@ public class ProductsServiceTests
     [Test]
     public async Task GetProductById_ReturnsProduct()
     {
-        var product = CreateProducts().First();
+        var product = ProductsTests.CreateProducts().First();
 
         _productRepositoryMock.Setup(repo => repo.GetProductById(product.Id)).ReturnsAsync(product);
 
@@ -82,7 +83,7 @@ public class ProductsServiceTests
     [Test]
     public async Task GetProductsByCategoryId_ReturnsProduct()
     {
-        var products = CreateProducts();
+        var products = ProductsTests.CreateProducts();
         var singleProductList = new List<Products>() { products[0] };
 
         _productRepositoryMock.Setup(repo => repo.GetProductsByCategoryId(products[0].CategoryId)).ReturnsAsync(singleProductList);
@@ -121,7 +122,7 @@ public class ProductsServiceTests
     [Test]
     public async Task CreateProduct_CreatesSuccessfully()
     {
-        var product = CreateProducts().First();
+        var product = ProductsTests.CreateProducts().First();
 
         _productRepositoryMock.Setup(repo => repo.CreateProduct(product)).ReturnsAsync(product);
 
@@ -144,8 +145,8 @@ public class ProductsServiceTests
     [Test]
     public async Task UpdateProduct_UpdatesSuccessfully()
     {
-        var product = CreateProducts().First();
-        var updateProduct = UpdateProduct(product.Id, product.SupplierId, product.CategoryId);
+        var product = ProductsTests.CreateProducts().First();
+        var updateProduct = ProductsTests.UpdateProduct(product.Id, product.SupplierId, product.CategoryId);
 
         _productRepositoryMock.Setup(repo => repo.CreateProduct(product)).ReturnsAsync(product);
         _productRepositoryMock.Setup(repo => repo.UpdateProduct(product)).Returns(Task.CompletedTask);
@@ -170,7 +171,7 @@ public class ProductsServiceTests
     [Test]
     public async Task DeleteProduct_DeletesSuccessfully()
     {
-        var product = CreateProducts().First();
+        var product = ProductsTests.CreateProducts().First();
 
         _productRepositoryMock.Setup(repo => repo.CreateProduct(product)).ReturnsAsync(product);
         _productRepositoryMock.Setup(repo => repo.DeleteProduct(product.Id)).Returns(Task.CompletedTask);
@@ -187,52 +188,4 @@ public class ProductsServiceTests
             Assert.That(exception.Message, Is.EqualTo("Product not found!"));
         });
     }
-
-    #region Private Methods
-
-    private static List<Products> CreateProducts()
-    {
-        return new List<Products>()
-        {
-            new Products()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Product1 Test",
-                Description = "Product1 Description",
-                Price = 49.99m,
-                Quantity = 2,
-                SupplierId = Guid.NewGuid(),
-                CategoryId = Guid.NewGuid(),
-                CreatedAt = DateTime.UtcNow
-            },
-            new Products()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Product2 Test",
-                Description = "Product2 Description",
-                Price = 99.99m,
-                Quantity = 4,
-                SupplierId = Guid.NewGuid(),
-                CategoryId = Guid.NewGuid(),
-                CreatedAt = DateTime.UtcNow
-            }
-        };
-    }
-
-    private static Products UpdateProduct(Guid id, Guid supplierId, Guid categoryId)
-    {
-        return new Products()
-        {
-            Id = id,
-            Name = "Product Updated",
-            Description = "Product Updated Description",
-            Price = 149.99m,
-            Quantity = 5,
-            SupplierId = supplierId,
-            CategoryId = categoryId,
-            CreatedAt = DateTime.UtcNow.AddDays(2)
-        };
-    }
-
-    #endregion
 }

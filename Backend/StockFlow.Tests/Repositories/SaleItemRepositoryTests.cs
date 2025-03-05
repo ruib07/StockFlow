@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using StockFlow.Domain.Entities;
 using StockFlow.Infrastructure.Data;
 using StockFlow.Infrastructure.Repositories;
+using StockFlow.Tests.Templates;
 
 namespace StockFlow.Tests.Repositories;
 
@@ -30,7 +30,7 @@ public class SaleItemRepositoryTests
     [Test]
     public async Task GetSaleItemById_ReturnsSaleItem()
     {
-        var saleItem = CreateSaleItems().First();
+        var saleItem = SaleItemsTests.CreateSaleItems().First();
 
         await _saleItemRepository.CreateSaleItem(saleItem);
 
@@ -51,7 +51,7 @@ public class SaleItemRepositoryTests
     [Test]
     public async Task GetSaleItemsBySaleId_ReturnsSaleItems()
     {
-        var saleItems = CreateSaleItems();
+        var saleItems = SaleItemsTests.CreateSaleItems();
         _context.SaleItems.AddRange(saleItems);
         await _context.SaveChangesAsync();
 
@@ -73,7 +73,7 @@ public class SaleItemRepositoryTests
     [Test]
     public async Task CreateSaleItem_CreatesSuccessfully()
     {
-        var newSaleItem = CreateSaleItems().First();
+        var newSaleItem = SaleItemsTests.CreateSaleItems().First();
 
         var result = await _saleItemRepository.CreateSaleItem(newSaleItem);
         var addedSaleItem = await _saleItemRepository.GetSaleItemById(newSaleItem.Id);
@@ -93,12 +93,12 @@ public class SaleItemRepositoryTests
     [Test]
     public async Task UpdateSaleItem_UpdatesSuccessfully()
     {
-        var existingSaleItem = CreateSaleItems().First();
+        var existingSaleItem = SaleItemsTests.CreateSaleItems().First();
         await _saleItemRepository.CreateSaleItem(existingSaleItem);
 
         _context.Entry(existingSaleItem).State = EntityState.Detached;
 
-        var updatedSaleItem = UpdateSaleItem(existingSaleItem.Id, existingSaleItem.SaleId, existingSaleItem.ProductId);
+        var updatedSaleItem = SaleItemsTests.UpdateSaleItem(existingSaleItem.Id, existingSaleItem.SaleId, existingSaleItem.ProductId);
 
         await _saleItemRepository.UpdateSaleItem(updatedSaleItem);
         var retrievedUpdatedSaleItem = await _saleItemRepository.GetSaleItemById(existingSaleItem.Id);
@@ -118,7 +118,7 @@ public class SaleItemRepositoryTests
     [Test]
     public async Task DeleteSaleItem_DeletesSuccessfully()
     {
-        var existingSaleItem = CreateSaleItems().First();
+        var existingSaleItem = SaleItemsTests.CreateSaleItems().First();
 
         await _saleItemRepository.CreateSaleItem(existingSaleItem);
         await _saleItemRepository.DeleteSaleItem(existingSaleItem.Id);
@@ -126,46 +126,4 @@ public class SaleItemRepositoryTests
 
         Assert.That(retrievedEmptySaleItem, Is.Null);
     }
-
-    #region Private Methods
-
-    private static List<SaleItems> CreateSaleItems()
-    {
-        return new List<SaleItems>()
-        {
-            new SaleItems()
-            {
-                Id = Guid.NewGuid(),
-                SaleId = Guid.NewGuid(),
-                ProductId = Guid.NewGuid(),
-                Quantity = 1,
-                UnitPrice = 49.99m,
-                SubTotal = 49.99m
-            },
-            new SaleItems()
-            {
-                Id = Guid.NewGuid(),
-                SaleId = Guid.NewGuid(),
-                ProductId = Guid.NewGuid(),
-                Quantity = 2,
-                UnitPrice = 99.99m,
-                SubTotal = 198.98m
-            }
-        };
-    }
-
-    private static SaleItems UpdateSaleItem(Guid id, Guid saleId, Guid productId)
-    {
-        return new SaleItems()
-        {
-            Id = id,
-            SaleId = saleId,
-            ProductId = productId,
-            Quantity = 2,
-            UnitPrice = 59.99m,
-            SubTotal = 119.98m
-        };
-    }
-
-    #endregion
 }

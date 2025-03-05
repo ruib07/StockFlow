@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using StockFlow.Domain.Entities;
 using StockFlow.Infrastructure.Data;
 using StockFlow.Infrastructure.Repositories;
+using StockFlow.Tests.Templates;
 
 namespace StockFlow.Tests.Repositories;
 
@@ -30,7 +30,7 @@ public class ProductRepositoryTests
     [Test]
     public async Task GetProducts_ReturnsProducts()
     {
-        var products = CreateProducts();
+        var products = ProductsTests.CreateProducts();
         _context.Products.AddRange(products);
         await _context.SaveChangesAsync();
 
@@ -50,7 +50,7 @@ public class ProductRepositoryTests
     [Test]
     public async Task GetProductById_ReturnsProduct()
     {
-        var product = CreateProducts().First();
+        var product = ProductsTests.CreateProducts().First();
 
         await _productRepository.CreateProduct(product);
 
@@ -72,7 +72,7 @@ public class ProductRepositoryTests
     [Test]
     public async Task GetProductsByCategoryId_ReturnsProduct()
     {
-        var products = CreateProducts();
+        var products = ProductsTests.CreateProducts();
         _context.Products.AddRange(products);
         await _context.SaveChangesAsync();
 
@@ -94,7 +94,7 @@ public class ProductRepositoryTests
     [Test]
     public async Task CreateProduct_CreatesSuccessfully()
     {
-        var newProduct = CreateProducts().First();
+        var newProduct = ProductsTests.CreateProducts().First();
 
         var result = await _productRepository.CreateProduct(newProduct);
         var addedProduct = await _productRepository.GetProductById(newProduct.Id);
@@ -115,12 +115,12 @@ public class ProductRepositoryTests
     [Test]
     public async Task UpdateProduct_UpdatesSuccessfully()
     {
-        var existingProduct = CreateProducts().First();
+        var existingProduct = ProductsTests.CreateProducts().First();
         await _productRepository.CreateProduct(existingProduct);
 
         _context.Entry(existingProduct).State = EntityState.Detached;
 
-        var updatedProduct = UpdateProduct(existingProduct.Id, existingProduct.SupplierId, existingProduct.CategoryId);
+        var updatedProduct = ProductsTests.UpdateProduct(existingProduct.Id, existingProduct.SupplierId, existingProduct.CategoryId);
 
         await _productRepository.UpdateProduct(updatedProduct);
         var retrievedUpdatedProduct = await _productRepository.GetProductById(existingProduct.Id);
@@ -141,7 +141,7 @@ public class ProductRepositoryTests
     [Test]
     public async Task DeleteProduct_DeletesSuccessfully()
     {
-        var existingProduct = CreateProducts().First();
+        var existingProduct = ProductsTests.CreateProducts().First();
 
         await _productRepository.CreateProduct(existingProduct);
         await _productRepository.DeleteProduct(existingProduct.Id);
@@ -149,51 +149,4 @@ public class ProductRepositoryTests
 
         Assert.That(retrivedEmptyProduct, Is.Null);
     }
-
-    #region Private Methods
-
-    private static List<Products> CreateProducts()
-    {
-        return new List<Products>()
-        {
-            new Products()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Product1 Test",
-                Description = "Product1 Description",
-                Price = 99.99m,
-                Quantity = 2,
-                SupplierId = Guid.NewGuid(),
-                CategoryId = Guid.NewGuid(),
-                CreatedAt = DateTime.UtcNow,
-            },
-            new Products()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Product2 Test",
-                Description = "Product2 Description",
-                Price = 99.99m,
-                Quantity = 2,
-                SupplierId = Guid.NewGuid(),
-                CategoryId = Guid.NewGuid(),
-                CreatedAt = DateTime.UtcNow,
-            }
-        };
-    }
-
-    private static Products UpdateProduct(Guid id, Guid supplierId, Guid categoryId)
-    {
-        return new Products()
-        {
-            Id = id,
-            Name = "Product1 Test",
-            Description = "Product1 Description",
-            Price = 99.99m,
-            Quantity = 2,
-            SupplierId = supplierId,
-            CategoryId = categoryId,
-        };
-    }
-
-    #endregion
 }

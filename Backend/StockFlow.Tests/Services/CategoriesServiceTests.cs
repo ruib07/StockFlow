@@ -3,6 +3,7 @@ using StockFlow.Application.Helpers;
 using StockFlow.Application.Interfaces;
 using StockFlow.Application.Services;
 using StockFlow.Domain.Entities;
+using StockFlow.Tests.Templates;
 using System.Net;
 
 namespace StockFlow.Tests.Services;
@@ -23,7 +24,7 @@ public class CategoriesServiceTests
     [Test]
     public async Task GetCategories_ReturnsCategories()
     {
-        var categories = CreateCategories();
+        var categories = CategoriesTests.CreateCategories();
 
         _categoryRepositoryMock.Setup(repo => repo.GetCategories()).ReturnsAsync(categories);
 
@@ -43,7 +44,7 @@ public class CategoriesServiceTests
     [Test]
     public async Task GetCategoryById_ReturnsCategory()
     {
-        var category = CreateCategories().First();
+        var category = CategoriesTests.CreateCategories().First();
 
         _categoryRepositoryMock.Setup(repo => repo.GetCategoryById(category.Id)).ReturnsAsync(category);
 
@@ -74,7 +75,7 @@ public class CategoriesServiceTests
     [Test]
     public async Task CreateCategory_CreatesSuccessfully()
     {
-        var category = CreateCategories().First();
+        var category = CategoriesTests.CreateCategories().First();
 
         _categoryRepositoryMock.Setup(repo => repo.CreateCategory(category)).ReturnsAsync(category);
 
@@ -91,8 +92,8 @@ public class CategoriesServiceTests
     [Test]
     public async Task UpdateCategory_UpdatesSuccessfully()
     {
-        var category = CreateCategories().First();
-        var updateCategory = UpdateCategory(category.Id);
+        var category = CategoriesTests.CreateCategories().First();
+        var updateCategory = CategoriesTests.UpdateCategory(category.Id);
 
         _categoryRepositoryMock.Setup(repo => repo.CreateCategory(category)).ReturnsAsync(category);
         _categoryRepositoryMock.Setup(repo => repo.UpdateCategory(updateCategory)).Returns(Task.CompletedTask);
@@ -112,7 +113,7 @@ public class CategoriesServiceTests
     [Test]
     public async Task DeleteCategory_DeletesSuccessfully()
     {
-        var category = CreateCategories().First();
+        var category = CategoriesTests.CreateCategories().First();
 
         _categoryRepositoryMock.Setup(repo => repo.CreateCategory(category)).ReturnsAsync(category);
         _categoryRepositoryMock.Setup(repo => repo.DeleteCategory(category.Id)).Returns(Task.CompletedTask);
@@ -129,34 +130,4 @@ public class CategoriesServiceTests
             Assert.That(exception.Message, Is.EqualTo("Category not found!"));
         });
     }
-
-    #region Private Methods
-
-    private static List<Categories> CreateCategories()
-    {
-        return new List<Categories>()
-        {
-            new Categories()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Category1 Test"
-            },
-            new Categories()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Category2 Test"
-            }
-        };
-    }
-
-    private static Categories UpdateCategory(Guid id)
-    {
-        return new Categories()
-        {
-            Id = id,
-            Name = "Category Updated"
-        };
-    }
-
-    #endregion
 }

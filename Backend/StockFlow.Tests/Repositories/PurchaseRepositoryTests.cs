@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using StockFlow.Domain.Entities;
 using StockFlow.Infrastructure.Data;
 using StockFlow.Infrastructure.Repositories;
+using StockFlow.Tests.Templates;
 
 namespace StockFlow.Tests.Repositories;
 
@@ -30,7 +30,7 @@ public class PurchaseRepositoryTests
     [Test]
     public async Task GetPurchases_ReturnsPurchases()
     {
-        var purchases = CreatePurchases();
+        var purchases = PurchasesTests.CreatePurchases();
         _context.Purchases.AddRange(purchases);
         await _context.SaveChangesAsync();
 
@@ -54,7 +54,7 @@ public class PurchaseRepositoryTests
     [Test]
     public async Task GetPurchaseById_ReturnsPurchase()
     {
-        var purchase = CreatePurchases().First();
+        var purchase = PurchasesTests.CreatePurchases().First();
 
         await _purchaseRepository.CreatePurchase(purchase);
 
@@ -73,7 +73,7 @@ public class PurchaseRepositoryTests
     [Test]
     public async Task CreatePurchase_CreatesSuccessfully()
     {
-        var newPurchase = CreatePurchases().First();
+        var newPurchase = PurchasesTests.CreatePurchases().First();
 
         var result = await _purchaseRepository.CreatePurchase(newPurchase);
         var addedPurchase = await _purchaseRepository.GetPurchaseById(newPurchase.Id);
@@ -91,12 +91,12 @@ public class PurchaseRepositoryTests
     [Test]
     public async Task UpdatePurchase_UpdatesSuccessfully()
     {
-        var existingPurchase = CreatePurchases().First();
+        var existingPurchase = PurchasesTests.CreatePurchases().First();
         await _purchaseRepository.CreatePurchase(existingPurchase);
 
         _context.Entry(existingPurchase).State = EntityState.Detached;
 
-        var updatedPurchase = UpdatePurchase(existingPurchase.Id, existingPurchase.SupplierId);
+        var updatedPurchase = PurchasesTests.UpdatePurchase(existingPurchase.Id, existingPurchase.SupplierId);
 
         await _purchaseRepository.UpdatePurchase(updatedPurchase);
         var retrievedUpdatedPurchase = await _purchaseRepository.GetPurchaseById(existingPurchase.Id);
@@ -114,7 +114,7 @@ public class PurchaseRepositoryTests
     [Test]
     public async Task DeletePurchase_DeletesSuccessfully()
     {
-        var existingPurchase = CreatePurchases().First();
+        var existingPurchase = PurchasesTests.CreatePurchases().First();
 
         await _purchaseRepository.CreatePurchase(existingPurchase);
         await _purchaseRepository.DeletePurchase(existingPurchase.Id);
@@ -122,40 +122,4 @@ public class PurchaseRepositoryTests
 
         Assert.That(retrievedEmptyPurchase, Is.Null);
     }
-
-    #region Private Methods
-
-    private static List<Purchases> CreatePurchases()
-    {
-        return new List<Purchases>()
-        {
-            new Purchases()
-            {
-                Id = Guid.NewGuid(),
-                SupplierId = Guid.NewGuid(),
-                PurchaseDate = DateTime.UtcNow,
-                Total = 149.99m,
-            },
-            new Purchases()
-            {
-                Id = Guid.NewGuid(),
-                SupplierId = Guid.NewGuid(),
-                PurchaseDate = DateTime.UtcNow,
-                Total = 199.99m,
-            }
-        };
-    }
-
-    private static Purchases UpdatePurchase(Guid id, Guid supplierId)
-    {
-        return new Purchases()
-        {
-            Id = id,
-            SupplierId = supplierId,
-            PurchaseDate = DateTime.UtcNow.AddDays(3),
-            Total = 99.99m
-        };
-    }
-
-    #endregion
 }

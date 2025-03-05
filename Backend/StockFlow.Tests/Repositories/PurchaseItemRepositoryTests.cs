@@ -1,8 +1,7 @@
-﻿using Castle.Core.Resource;
-using Microsoft.EntityFrameworkCore;
-using StockFlow.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
 using StockFlow.Infrastructure.Data;
 using StockFlow.Infrastructure.Repositories;
+using StockFlow.Tests.Templates;
 
 namespace StockFlow.Tests.Repositories;
 
@@ -31,7 +30,7 @@ public class PurchaseItemRepositoryTests
     [Test]
     public async Task GetPurchaseItemById_ReturnsPurchaseItem()
     {
-        var purchaseItem = CreatePurchaseItems().First();
+        var purchaseItem = PurchaseItemsTests.CreatePurchaseItems().First();
 
         await _purchaseItemRepository.CreatePurchaseItem(purchaseItem);
 
@@ -52,7 +51,7 @@ public class PurchaseItemRepositoryTests
     [Test]
     public async Task GetPurchaseItemsByPurchaseId_ReturnsPurchaseItem()
     {
-        var purchaseItems = CreatePurchaseItems();
+        var purchaseItems = PurchaseItemsTests.CreatePurchaseItems();
         _context.PurchaseItems.AddRange(purchaseItems);
         await _context.SaveChangesAsync();
 
@@ -74,7 +73,7 @@ public class PurchaseItemRepositoryTests
     [Test]
     public async Task CreatePurchaseItem_CreatesSuccessfully()
     {
-        var newPurchaseItem = CreatePurchaseItems().First();
+        var newPurchaseItem = PurchaseItemsTests.CreatePurchaseItems().First();
 
         var result = await _purchaseItemRepository.CreatePurchaseItem(newPurchaseItem);
         var addedPurchaseItem = await _purchaseItemRepository.GetPurchaseItemById(newPurchaseItem.Id);
@@ -94,12 +93,12 @@ public class PurchaseItemRepositoryTests
     [Test]
     public async Task UpdatePurchaseItem_UpdatesSuccessfully()
     {
-        var existingPurchaseItem = CreatePurchaseItems().First();
+        var existingPurchaseItem = PurchaseItemsTests.CreatePurchaseItems().First();
         await _purchaseItemRepository.CreatePurchaseItem(existingPurchaseItem);
 
         _context.Entry(existingPurchaseItem).State = EntityState.Detached;
 
-        var updatedPurchaseItem = UpdatePurchaseItem(existingPurchaseItem.Id, existingPurchaseItem.PurchaseId, existingPurchaseItem.ProductId);
+        var updatedPurchaseItem = PurchaseItemsTests.UpdatePurchaseItem(existingPurchaseItem.Id, existingPurchaseItem.PurchaseId, existingPurchaseItem.ProductId);
 
         await _purchaseItemRepository.UpdatePurchaseItem(updatedPurchaseItem);
         var retrieveUpdatedPurchaseItem = await _purchaseItemRepository.GetPurchaseItemById(existingPurchaseItem.Id);
@@ -119,7 +118,7 @@ public class PurchaseItemRepositoryTests
     [Test]
     public async Task DeletePurchaseItem_DeletesSuccessfully()
     {
-        var existingPurchaseItem = CreatePurchaseItems().First();
+        var existingPurchaseItem = PurchaseItemsTests.CreatePurchaseItems().First();
 
         await _purchaseItemRepository.CreatePurchaseItem(existingPurchaseItem);
         await _purchaseItemRepository.DeletePurchaseItem(existingPurchaseItem.Id);
@@ -127,46 +126,4 @@ public class PurchaseItemRepositoryTests
 
         Assert.That(retrievedEmptyPurchaseItem, Is.Null);
     }
-
-    #region Private Methods
-
-    private static List<PurchaseItems> CreatePurchaseItems()
-    {
-        return new List<PurchaseItems>()
-        {
-            new PurchaseItems()
-            {
-                Id = Guid.NewGuid(),
-                PurchaseId = Guid.NewGuid(),
-                ProductId = Guid.NewGuid(),
-                Quantity = 2,
-                UnitPrice = 99.99m,
-                SubTotal = 198.99m
-            },
-            new PurchaseItems()
-            {
-                Id = Guid.NewGuid(),
-                PurchaseId = Guid.NewGuid(),
-                ProductId = Guid.NewGuid(),
-                Quantity = 4,
-                UnitPrice = 199.99m,
-                SubTotal = 498.99m
-            }
-        };
-    }
-
-    private static PurchaseItems UpdatePurchaseItem(Guid id, Guid purchaseId, Guid productId)
-    {
-        return new PurchaseItems()
-        {
-            Id = id,
-            PurchaseId = purchaseId,
-            ProductId = productId,
-            Quantity = 5,
-            UnitPrice = 149.99m,
-            SubTotal = 299.99m
-        };
-    }
-
-    #endregion
 }

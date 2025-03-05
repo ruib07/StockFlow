@@ -2,6 +2,7 @@
 using StockFlow.Domain.Entities;
 using StockFlow.Infrastructure.Data;
 using StockFlow.Infrastructure.Repositories;
+using StockFlow.Tests.Templates;
 
 namespace StockFlow.Tests.Repositories;
 
@@ -30,7 +31,7 @@ public class CustomerRepositoryTests
     [Test]
     public async Task GetCustomers_ReturnsCustomers()
     {
-        var customers = CreateCustomers();
+        var customers = CustomersTests.CreateCustomers();
         _context.Customers.AddRange(customers);
         await _context.SaveChangesAsync();
 
@@ -50,7 +51,7 @@ public class CustomerRepositoryTests
     [Test]
     public async Task GetCustomerById_ReturnsCustomer()
     {
-        var customer = CreateCustomers().First();
+        var customer = CustomersTests.CreateCustomers().First();
 
         await _customerRepository.CreateCustomer(customer);
 
@@ -71,7 +72,7 @@ public class CustomerRepositoryTests
     [Test]
     public async Task GetCustomerByEmail_ReturnsCustomer()
     {
-        var customer = CreateCustomers().First();
+        var customer = CustomersTests.CreateCustomers().First();
 
         await _customerRepository.CreateCustomer(customer);
 
@@ -92,7 +93,7 @@ public class CustomerRepositoryTests
     [Test]
     public async Task CreateCustomer_CreatesSuccessfully()
     {
-        var newCustomer = CreateCustomers().First();
+        var newCustomer = CustomersTests.CreateCustomers().First();
 
         var result = await _customerRepository.CreateCustomer(newCustomer);
         var addedCustomer = await _customerRepository.GetCustomerById(newCustomer.Id);
@@ -112,12 +113,12 @@ public class CustomerRepositoryTests
     [Test]
     public async Task UpdateCustomer_UpdatesSuccessfully()
     {
-        var existingCustomer = CreateCustomers().First();
+        var existingCustomer = CustomersTests.CreateCustomers().First();
         await _customerRepository.CreateCustomer(existingCustomer);
 
         _context.Entry(existingCustomer).State = EntityState.Detached;
 
-        var updatedCustomer = UpdateCustomer(existingCustomer.Id);
+        var updatedCustomer = CustomersTests.UpdateCustomer(existingCustomer.Id, "customerupdated@email.com");
 
         await _customerRepository.UpdateCustomer(updatedCustomer);
         var retrievedUpdatedCustomer = await _customerRepository.GetCustomerById(existingCustomer.Id);
@@ -137,7 +138,7 @@ public class CustomerRepositoryTests
     [Test]
     public async Task DeleteCustomer_DeletesSuccessfully()
     {
-        var existingCustomer = CreateCustomers().First();
+        var existingCustomer = CustomersTests.CreateCustomers().First();
 
         await _customerRepository.CreateCustomer(existingCustomer);
         await _customerRepository.DeleteCustomer(existingCustomer.Id);
@@ -145,46 +146,4 @@ public class CustomerRepositoryTests
 
         Assert.That(retrievedEmptyCustomer, Is.Null);
     }
-
-    #region Private Methods
-
-    private static List<Customers> CreateCustomers()
-    {
-        return new List<Customers>()
-        {
-            new Customers()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Customer1 Test",
-                NIF = "123456789",
-                PhoneNumber = "912345678",
-                Email = "customer1test@email.com",
-                Address = "Customer1 Test address"
-            },
-            new Customers()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Customer2 Test",
-                NIF = "987654321",
-                PhoneNumber = "965432178",
-                Email = "customer2test@email.com",
-                Address = "Customer2 Test address"
-            }
-        };
-    }
-
-    private static Customers UpdateCustomer(Guid id)
-    {
-        return new Customers()
-        {
-            Id = id,
-            Name = "Customer Updated",
-            NIF = "231456543",
-            PhoneNumber = "918907654",
-            Email = "customerupdated@email.com",
-            Address = "Customer Updated address"
-        };
-    }
-
-    #endregion
 }

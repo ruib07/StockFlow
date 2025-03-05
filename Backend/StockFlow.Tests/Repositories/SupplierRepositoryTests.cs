@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using StockFlow.Domain.Entities;
 using StockFlow.Infrastructure.Data;
 using StockFlow.Infrastructure.Repositories;
+using StockFlow.Tests.Templates;
 
 namespace StockFlow.Tests.Repositories;
 
@@ -30,7 +30,7 @@ public class SupplierRepositoryTests
     [Test]
     public async Task GetSuppliers_ReturnsSuppliers()
     {
-        var suppliers = CreateSuppliers();
+        var suppliers = SuppliersTests.CreateSuppliers();
         _context.Suppliers.AddRange(suppliers);
         await _context.SaveChangesAsync();
 
@@ -58,7 +58,7 @@ public class SupplierRepositoryTests
     [Test]
     public async Task GetSupplierById_ReturnsSupplier()
     {
-        var supplier = CreateSuppliers().First();
+        var supplier = SuppliersTests.CreateSuppliers().First();
 
         await _supplierRepository.CreateSupplier(supplier);
 
@@ -79,7 +79,7 @@ public class SupplierRepositoryTests
     [Test]
     public async Task GetSupplierByEmail_ReturnsSupplier()
     {
-        var supplier = CreateSuppliers().First();
+        var supplier = SuppliersTests.CreateSuppliers().First();
 
         await _supplierRepository.CreateSupplier(supplier);
 
@@ -100,7 +100,7 @@ public class SupplierRepositoryTests
     [Test]
     public async Task CreateSupplier_CreatesSuccessfully()
     {
-        var newSupplier = CreateSuppliers().First();
+        var newSupplier = SuppliersTests.CreateSuppliers().First();
 
         var result = await _supplierRepository.CreateSupplier(newSupplier);
         var addedSupplier = await _supplierRepository.GetSupplierById(newSupplier.Id);
@@ -120,12 +120,12 @@ public class SupplierRepositoryTests
     [Test]
     public async Task UpdateSupplier_UpdatesSuccessfully()
     {
-        var existingSupplier = CreateSuppliers().First();
+        var existingSupplier = SuppliersTests.CreateSuppliers().First();
         await _supplierRepository.CreateSupplier(existingSupplier);
 
         _context.Entry(existingSupplier).State = EntityState.Detached;
 
-        var updatedSupplier = UpdateSupplier(existingSupplier.Id);
+        var updatedSupplier = SuppliersTests.UpdateSupplier(existingSupplier.Id, "supplierupdated@email.com");
 
         await _supplierRepository.UpdateSupplier(updatedSupplier);
         var retrievedUpdatedSupplier = await _supplierRepository.GetSupplierById(existingSupplier.Id);
@@ -145,7 +145,7 @@ public class SupplierRepositoryTests
     [Test]
     public async Task DeleteSupplier_DeletesSuccessfully()
     {
-        var existingSupplier = CreateSuppliers().First();
+        var existingSupplier = SuppliersTests.CreateSuppliers().First();
 
         await _supplierRepository.CreateSupplier(existingSupplier);
         await _supplierRepository.DeleteSupplier(existingSupplier.Id);
@@ -153,46 +153,4 @@ public class SupplierRepositoryTests
 
         Assert.That(retrievedEmptySupplier, Is.Null);
     }
-
-    #region Private Methods
-
-    private static List<Suppliers> CreateSuppliers()
-    {
-        return new List<Suppliers>()
-        {
-            new Suppliers()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Supplier1 Test",
-                NIF = "123456789",
-                PhoneNumber = "912345678",
-                Email = "supplier1test@email.com",
-                Address = "Supplier1 Address"
-            },
-            new Suppliers()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Supplier2 Test",
-                NIF = "987654321",
-                PhoneNumber = "965432178",
-                Email = "supplier2test@email.com",
-                Address = "Supplier2 Address"
-            }
-        };
-    }
-
-    private static Suppliers UpdateSupplier(Guid id)
-    {
-        return new Suppliers()
-        {
-            Id = id,
-            Name = "Supplier Updated",
-            NIF = "654321678",
-            PhoneNumber = "917658902",
-            Email = "supplierupdated@email.com",
-            Address = "Supplier Updated Address"
-        };
-    }
-
-    #endregion
 }

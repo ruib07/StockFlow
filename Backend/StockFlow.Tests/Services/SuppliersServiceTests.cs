@@ -3,6 +3,7 @@ using StockFlow.Application.Helpers;
 using StockFlow.Application.Interfaces;
 using StockFlow.Application.Services;
 using StockFlow.Domain.Entities;
+using StockFlow.Tests.Templates;
 using System.Net;
 
 namespace StockFlow.Tests.Services;
@@ -23,7 +24,7 @@ public class SuppliersServiceTests
     [Test]
     public async Task GetSuppliers_ReturnsSuppliers()
     {
-        var suppliers = CreateSuppliers();
+        var suppliers = SuppliersTests.CreateSuppliers();
 
         _supplierRepositoryMock.Setup(repo => repo.GetSuppliers()).ReturnsAsync(suppliers);
 
@@ -51,7 +52,7 @@ public class SuppliersServiceTests
     [Test]
     public async Task GetSupplierById_ReturnsSupplier()
     {
-        var supplier = CreateSuppliers().First();
+        var supplier = SuppliersTests.CreateSuppliers().First();
 
         _supplierRepositoryMock.Setup(repo => repo.GetSupplierById(supplier.Id)).ReturnsAsync(supplier);
 
@@ -86,7 +87,7 @@ public class SuppliersServiceTests
     [Test]
     public async Task CreateSupplier_CreatesSuccessfully()
     {
-        var supplier = CreateSuppliers().First();
+        var supplier = SuppliersTests.CreateSuppliers().First();
 
         _supplierRepositoryMock.Setup(repo => repo.CreateSupplier(supplier)).ReturnsAsync(supplier);
 
@@ -107,7 +108,7 @@ public class SuppliersServiceTests
     [Test]
     public void CreateSupplier_ReturnsConflict_WhenEmailAlreadyExists()
     {
-        var supplier = CreateSuppliers().First();
+        var supplier = SuppliersTests.CreateSuppliers().First();
 
         _supplierRepositoryMock.Setup(repo => repo.GetSupplierByEmail(supplier.Email)).ReturnsAsync(supplier);
 
@@ -123,8 +124,8 @@ public class SuppliersServiceTests
     [Test]
     public async Task UpdateSupplier_UpdatesSuccessfully()
     {
-        var supplier = CreateSuppliers().First();
-        var updateSupplier = UpdateSupplier(supplier.Id, "supplierupdated@email.com");
+        var supplier = SuppliersTests.CreateSuppliers().First();
+        var updateSupplier = SuppliersTests.UpdateSupplier(supplier.Id, "supplierupdated@email.com");
 
         _supplierRepositoryMock.Setup(repo => repo.CreateSupplier(supplier)).ReturnsAsync(supplier);
         _supplierRepositoryMock.Setup(repo => repo.UpdateSupplier(updateSupplier)).Returns(Task.CompletedTask);
@@ -149,12 +150,12 @@ public class SuppliersServiceTests
     public void UpdateSupplier_ReturnsConflict_WhenEmailAlreadyExists()
     {
         var supplierId = Guid.NewGuid();
-        var existingSupplier = CreateSuppliers().First();
+        var existingSupplier = SuppliersTests.CreateSuppliers().First();
         existingSupplier.Id = supplierId;
         existingSupplier.Email = "supplier1@email.com";
 
         var conflictingSupplier = new Suppliers() { Id = Guid.NewGuid(), Email = "supplierupdated@email.com" };
-        var updateSupplier = UpdateSupplier(supplierId, "supplierupdated@email.com");
+        var updateSupplier = SuppliersTests.UpdateSupplier(supplierId, "supplierupdated@email.com");
 
         _supplierRepositoryMock.Setup(repo => repo.GetSupplierById(supplierId)).ReturnsAsync(existingSupplier);
         _supplierRepositoryMock.Setup(repo => repo.GetSupplierByEmail(updateSupplier.Email)).ReturnsAsync(conflictingSupplier);
@@ -171,7 +172,7 @@ public class SuppliersServiceTests
     [Test]
     public async Task DeleteSupplier_DeletesSuccessfully()
     {
-        var supplier = CreateSuppliers().First();
+        var supplier = SuppliersTests.CreateSuppliers().First();
 
         _supplierRepositoryMock.Setup(repo => repo.CreateSupplier(supplier)).ReturnsAsync(supplier);
         _supplierRepositoryMock.Setup(repo => repo.DeleteSupplier(supplier.Id)).Returns(Task.CompletedTask);
@@ -188,46 +189,4 @@ public class SuppliersServiceTests
             Assert.That(exception.Message, Is.EqualTo("Supplier not found!"));
         });
     }
-
-    #region Private Methods
-
-    private  static List<Suppliers> CreateSuppliers()
-    {
-        return new List<Suppliers>()
-        {
-            new Suppliers()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Supplier1 Test",
-                NIF = "123456789",
-                PhoneNumber = "916543789",
-                Email = "supplier1test@email.com",
-                Address = "Supplier1 Test Address"
-            },
-            new Suppliers()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Supplier2 Test",
-                NIF = "987654321",
-                PhoneNumber = "965789076",
-                Email = "supplier2test@email.com",
-                Address = "Supplier2 Test Address"
-            }
-        };
-    }
-
-    private static Suppliers UpdateSupplier(Guid id, string email)
-    {
-        return new Suppliers()
-        {
-            Id = id,
-            Name = "Supplier Updated",
-            NIF = "765432789",
-            PhoneNumber = "987654367",
-            Email = email,
-            Address = "Supplier Updated Address"
-        };
-    }
-
-    #endregion
 }

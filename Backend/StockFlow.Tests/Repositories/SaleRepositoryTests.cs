@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using StockFlow.Domain.Entities;
 using StockFlow.Infrastructure.Data;
 using StockFlow.Infrastructure.Repositories;
+using StockFlow.Tests.Templates;
 
 namespace StockFlow.Tests.Repositories;
 
@@ -30,7 +30,7 @@ public class SaleRepositoryTests
     [Test]
     public async Task GetSales_ReturnsSales()
     {
-        var sales = CreateSales();
+        var sales = SalesTests.CreateSales();
         _context.Sales.AddRange(sales);
         await _context.SaveChangesAsync();
 
@@ -54,7 +54,7 @@ public class SaleRepositoryTests
     [Test]
     public async Task GetSaleById_ReturnsSale()
     {
-        var sale = CreateSales().First();
+        var sale = SalesTests.CreateSales().First();
 
         await _saleRepository.CreateSale(sale);
 
@@ -73,7 +73,7 @@ public class SaleRepositoryTests
     [Test]
     public async Task CreateSale_CreatesSuccessfully()
     {
-        var newSale = CreateSales().First();
+        var newSale = SalesTests.CreateSales().First();
 
         var result = await _saleRepository.CreateSale(newSale);
         var addedSale = await _saleRepository.GetSaleById(newSale.Id);
@@ -91,12 +91,12 @@ public class SaleRepositoryTests
     [Test]
     public async Task UpdateSale_UpdatesSuccessfully()
     {
-        var existingSale = CreateSales().First();
+        var existingSale = SalesTests.CreateSales().First();
         await _saleRepository.CreateSale(existingSale);
 
         _context.Entry(existingSale).State = EntityState.Detached;
 
-        var updatedSale = UpdateSale(existingSale.Id, existingSale.CustomerId);
+        var updatedSale = SalesTests.UpdateSale(existingSale.Id, existingSale.CustomerId);
 
         await _saleRepository.UpdateSale(updatedSale);
         var retrievedUpdateSale = await _saleRepository.GetSaleById(existingSale.Id);
@@ -114,7 +114,7 @@ public class SaleRepositoryTests
     [Test]
     public async Task DeleteSale_DeletesSuccessfully()
     {
-        var existingSale = CreateSales().First();
+        var existingSale = SalesTests.CreateSales().First();
 
         await _saleRepository.CreateSale(existingSale);
         await _saleRepository.DeleteSale(existingSale.Id);
@@ -122,40 +122,4 @@ public class SaleRepositoryTests
 
         Assert.That(retrievedEmptySale, Is.Null);
     }
-
-    #region Private Methods
-
-    private static List<Sales> CreateSales()
-    {
-        return new List<Sales>()
-        {
-            new Sales()
-            {
-                Id = Guid.NewGuid(),
-                CustomerId = Guid.NewGuid(),
-                SaleDate = DateTime.UtcNow,
-                Total = 99.99m
-            },
-            new Sales()
-            {
-                Id = Guid.NewGuid(),
-                CustomerId = Guid.NewGuid(),
-                SaleDate = DateTime.UtcNow,
-                Total = 134.99m
-            }
-        };
-    }
-
-    private static Sales UpdateSale(Guid id, Guid customerId)
-    {
-        return new Sales()
-        {
-            Id = id,
-            CustomerId = customerId,
-            SaleDate = DateTime.UtcNow.AddDays(2),
-            Total = 149.99m
-        };
-    }
-
-    #endregion
 }

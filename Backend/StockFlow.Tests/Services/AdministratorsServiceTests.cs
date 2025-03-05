@@ -2,8 +2,8 @@
 using StockFlow.Application.Helpers;
 using StockFlow.Application.Interfaces;
 using StockFlow.Application.Services;
-using StockFlow.Domain.DTOs;
 using StockFlow.Domain.Entities;
+using StockFlow.Tests.Templates;
 using System.Net;
 
 namespace StockFlow.Tests.Services;
@@ -24,7 +24,7 @@ public class AdministratorsServiceTests
     [Test]
     public async Task GetAdminById_ReturnsAdministrator()
     {
-        var admin = CreateAdmin();
+        var admin = AdministratorsTests.CreateAdmin();
 
         _administratorRepositoryMock.Setup(repo => repo.GetAdminById(admin.Id)).ReturnsAsync(admin);
 
@@ -57,7 +57,7 @@ public class AdministratorsServiceTests
     [Test]
     public async Task CreateAdmin_CreatesSuccessfully()
     {
-        var admin = CreateAdmin();
+        var admin = AdministratorsTests.CreateAdmin();
 
         _administratorRepositoryMock.Setup(repo => repo.CreateAdmin(admin)).ReturnsAsync(admin);
 
@@ -76,7 +76,7 @@ public class AdministratorsServiceTests
     [Test]
     public void CreateAdmin_ReturnsConflict_WhenEmailAlreadyExists()
     {
-        var admin = CreateAdmin();
+        var admin = AdministratorsTests.CreateAdmin();
 
         _administratorRepositoryMock.Setup(repo => repo.GetAdminByEmail(admin.Email)).ReturnsAsync(admin);
 
@@ -92,7 +92,7 @@ public class AdministratorsServiceTests
     [Test]
     public void CreateAdmin_ReturnsBadRequest_WhenNameEmailAndPasswordAreEmpty()
     {
-        var invalidAdmin = InvalidAdminCreation(string.Empty, string.Empty, string.Empty, 0);
+        var invalidAdmin = AdministratorsTests.InvalidAdminCreation(string.Empty, string.Empty, string.Empty, 0);
 
         _administratorRepositoryMock.Setup(repo => repo.CreateAdmin(invalidAdmin)).ReturnsAsync(invalidAdmin);
 
@@ -108,7 +108,7 @@ public class AdministratorsServiceTests
     [Test]
     public async Task GeneratePasswordResetToken_ReturnsToken()
     {
-        var admin = CreateAdmin();
+        var admin = AdministratorsTests.CreateAdmin();
 
         _administratorRepositoryMock.Setup(repo => repo.CreateAdmin(admin)).ReturnsAsync(admin);
         _administratorRepositoryMock.Setup(repo => repo.GetAdminByEmail(admin.Email)).ReturnsAsync(admin);
@@ -123,8 +123,8 @@ public class AdministratorsServiceTests
     [Test]
     public async Task UpdatePassword_ValidToken_UpdatesPasswordSuccessfully()
     {
-        var admin = CreateAdmin();
-        var updatePassword = UpdatePasswordCreation("valid-token", "New@Password-123", "New@Password-123");
+        var admin = AdministratorsTests.CreateAdmin();
+        var updatePassword = AdministratorsTests.UpdatePasswordCreation("valid-token", "New@Password-123", "New@Password-123");
         var passwordResetToken = new PasswordResetToken() { Token = updatePassword.Token, Administrator = admin };
 
         _administratorRepositoryMock.Setup(repo => repo.CreateAdmin(admin)).ReturnsAsync(admin);
@@ -143,7 +143,7 @@ public class AdministratorsServiceTests
     [Test]
     public void UpdatePassword_ThrowsBadRequest_WhenPasswordFieldsAreEmpty()
     {
-        var updatePassword = UpdatePasswordCreation("valid-token", string.Empty, string.Empty);
+        var updatePassword = AdministratorsTests.UpdatePasswordCreation("valid-token", string.Empty, string.Empty);
 
         var exception = Assert.ThrowsAsync<CustomException>(() => _administratorService
                               .UpdatePassword(updatePassword.Token, updatePassword.NewPassword, updatePassword.ConfirmNewPassword));
@@ -158,7 +158,7 @@ public class AdministratorsServiceTests
     [Test]
     public void UpdatePassword_ThrowsBadRequest_WhenPasswordsDoNotMatch()
     {
-        var updatePassword = UpdatePasswordCreation("valid-token", "NewPassword123!", "DifferentPassword123!");
+        var updatePassword = AdministratorsTests.UpdatePasswordCreation("valid-token", "NewPassword123!", "DifferentPassword123!");
 
         var exception = Assert.ThrowsAsync<CustomException>(() => _administratorService
                               .UpdatePassword(updatePassword.Token, updatePassword.NewPassword, updatePassword.ConfirmNewPassword));
@@ -173,7 +173,7 @@ public class AdministratorsServiceTests
     [Test]
     public void UpdatePassword_ThrowsBadRequest_WhenTokenIsInvalid()
     {
-        var updatePassword = UpdatePasswordCreation("invalid-token", "NewPassword123!", "NewPassword123!");
+        var updatePassword = AdministratorsTests.UpdatePasswordCreation("invalid-token", "NewPassword123!", "NewPassword123!");
 
         _administratorRepositoryMock.Setup(repo => repo.GetPasswordResetToken(updatePassword.Token)).ReturnsAsync((PasswordResetToken)null);
 
@@ -190,8 +190,8 @@ public class AdministratorsServiceTests
     [Test]
     public async Task UpdateAdmin_UpdatesSuccessfully()
     {
-        var admin = CreateAdmin();
-        var updateAdmin = UpdateAdmin(admin.Id, "adminupdated@email.com");
+        var admin = AdministratorsTests.CreateAdmin();
+        var updateAdmin = AdministratorsTests.UpdateAdmin(admin.Id, "adminupdated@email.com");
 
         _administratorRepositoryMock.Setup(repo => repo.CreateAdmin(admin)).ReturnsAsync(admin);
         _administratorRepositoryMock.Setup(repo => repo.UpdateAdmin(updateAdmin)).Returns(Task.CompletedTask);
@@ -213,12 +213,12 @@ public class AdministratorsServiceTests
     public void UpdateAdmin_ReturnsConflict_WhenEmailAlreadyExists()
     {
         var adminId = Guid.NewGuid();
-        var existingAdmin = CreateAdmin();
+        var existingAdmin = AdministratorsTests.CreateAdmin();
         existingAdmin.Id = adminId;
         existingAdmin.Email = "admin1@email.com";
 
         var conflictingAdmin = new Administrators() { Id = Guid.NewGuid(), Email = "adminupdated@email.com" };
-        var updateAdmin = UpdateAdmin(adminId, "adminupdated@email.com");
+        var updateAdmin = AdministratorsTests.UpdateAdmin(adminId, "adminupdated@email.com");
 
         _administratorRepositoryMock.Setup(repo => repo.GetAdminById(adminId)).ReturnsAsync(existingAdmin);
         _administratorRepositoryMock.Setup(repo => repo.GetAdminByEmail(updateAdmin.Email)).ReturnsAsync(conflictingAdmin);
@@ -235,7 +235,7 @@ public class AdministratorsServiceTests
     [Test]
     public async Task DeleteAdmin_DeletesSuccessfully()
     {
-        var admin = CreateAdmin();
+        var admin = AdministratorsTests.CreateAdmin();
 
         _administratorRepositoryMock.Setup(repo => repo.CreateAdmin(admin)).ReturnsAsync(admin);
         _administratorRepositoryMock.Setup(repo => repo.DeleteAdmin(admin.Id)).Returns(Task.CompletedTask);
@@ -252,46 +252,4 @@ public class AdministratorsServiceTests
             Assert.That(exception.Message, Is.EqualTo("Admin not found!"));
         });
     }
-
-    #region Private Method
-
-    private static Administrators CreateAdmin()
-    {
-        return new Administrators()
-        {
-            Id = Guid.NewGuid(),
-            Name = "Admin1 Test",
-            Email = "admin1test@email.com",
-            Password = PasswordHasherHelper.HashPassword("Admin1@Test-123")
-        };
-    }
-
-    private static Administrators InvalidAdminCreation(string name, string email, string password, decimal balance)
-    {
-        return new Administrators()
-        {
-            Id = Guid.NewGuid(),
-            Name = name,
-            Email = email,
-            Password = PasswordHasherHelper.HashPassword(password)
-        };
-    }
-
-    private static RecoverPasswordDTO.UpdatePassword UpdatePasswordCreation(string token, string newPassword, string confirmNewPassword)
-    {
-        return new RecoverPasswordDTO.UpdatePassword(token, newPassword, confirmNewPassword);
-    }
-
-    private static Administrators UpdateAdmin(Guid id, string email)
-    {
-        return new Administrators()
-        {
-            Id = id,
-            Name = "Admin Updated",
-            Email = email,
-            Password = PasswordHasherHelper.HashPassword("Admin@Updated-123")
-        };
-    }
-
-    #endregion
 }

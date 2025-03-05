@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using StockFlow.Domain.Entities;
 using StockFlow.Infrastructure.Data;
 using StockFlow.Infrastructure.Repositories;
+using StockFlow.Tests.Templates;
 
 namespace StockFlow.Tests.Repositories;
 
@@ -30,7 +30,7 @@ public class CategoryRepositoryTests
     [Test]
     public async Task GetCategories_ReturnsCategories()
     {
-        var categories = CreateCategories();
+        var categories = CategoriesTests.CreateCategories();
         _context.Categories.AddRange(categories);
         await _context.SaveChangesAsync();
 
@@ -50,7 +50,7 @@ public class CategoryRepositoryTests
     [Test]
     public async Task GetCategoryById_ReturnsCategory()
     {
-        var category = CreateCategories().First();
+        var category = CategoriesTests.CreateCategories().First();
 
         await _categoryRepository.CreateCategory(category);
 
@@ -67,7 +67,7 @@ public class CategoryRepositoryTests
     [Test]
     public async Task CreateCategory_CreatesSuccessfully()
     {
-        var newCategory = CreateCategories().First();
+        var newCategory = CategoriesTests.CreateCategories().First();
 
         var result = await _categoryRepository.CreateCategory(newCategory);
         var addedCategory = await _categoryRepository.GetCategoryById(newCategory.Id);
@@ -83,12 +83,12 @@ public class CategoryRepositoryTests
     [Test]
     public async Task UpdateCategory_UpdatesSuccessfully()
     {
-        var existingCategory = CreateCategories().First();
+        var existingCategory = CategoriesTests.CreateCategories().First();
         await _categoryRepository.CreateCategory(existingCategory);
 
         _context.Entry(existingCategory).State = EntityState.Detached;
 
-        var updatedCategory = UpdateCategory(existingCategory.Id);
+        var updatedCategory = CategoriesTests.UpdateCategory(existingCategory.Id);
 
         await _categoryRepository.UpdateCategory(updatedCategory);
         var retrievedUpdatedCategory = await _categoryRepository.GetCategoryById(existingCategory.Id);
@@ -104,7 +104,7 @@ public class CategoryRepositoryTests
     [Test]
     public async Task DeleteCategory_DeletesSuccessfully()
     {
-        var existingCategory = CreateCategories().First();
+        var existingCategory = CategoriesTests.CreateCategories().First();
 
         await _categoryRepository.CreateCategory(existingCategory);
         await _categoryRepository.DeleteCategory(existingCategory.Id);
@@ -112,34 +112,4 @@ public class CategoryRepositoryTests
 
         Assert.That(retrievedEmptyCategory, Is.Null);
     }
-
-    #region Private Methods
-
-    private static List<Categories> CreateCategories()
-    {
-        return new List<Categories>()
-        {
-            new Categories()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Category1 Test"
-            },
-            new Categories()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Category2 Test"
-            }
-        };
-    }
-
-    private static Categories UpdateCategory(Guid id)
-    {
-        return new Categories()
-        {
-            Id = id,
-            Name = "Category Updated"
-        };
-    }
-
-    #endregion
 }

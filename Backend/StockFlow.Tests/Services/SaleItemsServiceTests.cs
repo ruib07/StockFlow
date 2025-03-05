@@ -3,6 +3,7 @@ using StockFlow.Application.Helpers;
 using StockFlow.Application.Interfaces;
 using StockFlow.Application.Services;
 using StockFlow.Domain.Entities;
+using StockFlow.Tests.Templates;
 using System.Net;
 
 namespace StockFlow.Tests.Services;
@@ -24,7 +25,7 @@ public class SaleItemsServiceTests
     [Test]
     public async Task GetSaleItemById_ReturnsSaleItem()
     {
-        var saleItem = CreateSaleItems().First();
+        var saleItem = SaleItemsTests.CreateSaleItems().First();
 
         _saleItemRepositoryMock.Setup(repo => repo.GetSaleItemById(saleItem.Id)).ReturnsAsync(saleItem);
 
@@ -59,7 +60,7 @@ public class SaleItemsServiceTests
     [Test]
     public async Task GetSaleItemsBySaleId_ReturnsSaleItem()
     {
-        var saleItems = CreateSaleItems();
+        var saleItems = SaleItemsTests.CreateSaleItems();
         var singleSaleItemList = new List<SaleItems>() { saleItems[0] };
 
         _saleItemRepositoryMock.Setup(repo => repo.GetSaleItemsBySaleId(saleItems[0].SaleId)).ReturnsAsync(singleSaleItemList);
@@ -96,7 +97,7 @@ public class SaleItemsServiceTests
     [Test]
     public async Task CreateSaleItem_CreatesSuccessfully()
     {
-        var saleItem = CreateSaleItems().First();
+        var saleItem = SaleItemsTests.CreateSaleItems().First();
 
         _saleItemRepositoryMock.Setup(repo => repo.CreateSaleItem(saleItem)).ReturnsAsync(saleItem);
 
@@ -117,8 +118,8 @@ public class SaleItemsServiceTests
     [Test]
     public async Task UpdateSaleItem_UpdatesSuccessfully()
     {
-        var saleItem = CreateSaleItems().First();
-        var updateSaleItem = UpdateSaleItem(saleItem.Id, saleItem.SaleId, saleItem.ProductId);
+        var saleItem = SaleItemsTests.CreateSaleItems().First();
+        var updateSaleItem = SaleItemsTests.UpdateSaleItem(saleItem.Id, saleItem.SaleId, saleItem.ProductId);
 
         _saleItemRepositoryMock.Setup(repo => repo.CreateSaleItem(saleItem)).ReturnsAsync(saleItem);
         _saleItemRepositoryMock.Setup(repo => repo.UpdateSaleItem(saleItem)).Returns(Task.CompletedTask);
@@ -142,7 +143,7 @@ public class SaleItemsServiceTests
     [Test]
     public async Task DeleteSaleItem_DeletesSuccessfully()
     {
-        var saleItem = CreateSaleItems().First();
+        var saleItem = SaleItemsTests.CreateSaleItems().First();
 
         _saleItemRepositoryMock.Setup(repo => repo.CreateSaleItem(saleItem)).ReturnsAsync(saleItem);
         _saleItemRepositoryMock.Setup(repo => repo.DeleteSaleItem(saleItem.Id)).Returns(Task.CompletedTask);
@@ -159,46 +160,4 @@ public class SaleItemsServiceTests
             Assert.That(exception.Message, Is.EqualTo("Sale item not found!"));
         });
     }
-
-    #region Private Methods
-
-    private static List<SaleItems> CreateSaleItems()
-    {
-        return new List<SaleItems>()
-        {
-            new SaleItems()
-            {
-                Id = Guid.NewGuid(),
-                SaleId = Guid.NewGuid(),
-                ProductId = Guid.NewGuid(),
-                Quantity = 1,
-                UnitPrice = 49.99m,
-                SubTotal = 49.99m
-            },
-            new SaleItems()
-            {
-                Id = Guid.NewGuid(),
-                SaleId = Guid.NewGuid(),
-                ProductId = Guid.NewGuid(),
-                Quantity = 2,
-                UnitPrice = 99.99m,
-                SubTotal = 198.98m
-            }
-        };
-    }
-
-    private static SaleItems UpdateSaleItem(Guid id, Guid saleId, Guid productId)
-    {
-        return new SaleItems()
-        {
-            Id = id,
-            SaleId = saleId,
-            ProductId = productId,
-            Quantity = 2,
-            UnitPrice = 49.99m,
-            SubTotal = 98.98m
-        };
-    }
-
-    #endregion
 }

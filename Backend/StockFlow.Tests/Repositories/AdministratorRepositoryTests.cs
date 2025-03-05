@@ -1,8 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using StockFlow.Application.Helpers;
-using StockFlow.Domain.Entities;
 using StockFlow.Infrastructure.Data;
 using StockFlow.Infrastructure.Repositories;
+using StockFlow.Tests.Templates;
 
 namespace StockFlow.Tests.Repositories;
 
@@ -31,7 +30,7 @@ public class AdministratorRepositoryTests
     [Test]
     public async Task GetAdminById_ReturnsAdmin()
     {
-        var admin = CreateAdministrator();
+        var admin = AdministratorsTests.CreateAdmin();
 
         await _administratorRepository.CreateAdmin(admin);
 
@@ -49,7 +48,7 @@ public class AdministratorRepositoryTests
     [Test]
     public async Task GetAdminByEmail_ReturnsAdmin()
     {
-        var admin = CreateAdministrator();
+        var admin = AdministratorsTests.CreateAdmin();
 
         await _administratorRepository.CreateAdmin(admin);
 
@@ -67,7 +66,7 @@ public class AdministratorRepositoryTests
     [Test]
     public async Task CreateAdmin_CreatesSuccessfully()
     {
-        var newAdmin = CreateAdministrator();
+        var newAdmin = AdministratorsTests.CreateAdmin();
 
         var result = await _administratorRepository.CreateAdmin(newAdmin);
         var addedAdmin = await _administratorRepository.GetAdminById(newAdmin.Id);
@@ -84,7 +83,7 @@ public class AdministratorRepositoryTests
     [Test]
     public async Task GeneratePasswordResetToken_CreatesTokenSuccessfully()
     {
-        var existingAdmin = CreateAdministrator();
+        var existingAdmin = AdministratorsTests.CreateAdmin();
 
         await _administratorRepository.CreateAdmin(existingAdmin);
         var token = await _administratorRepository.GeneratePasswordResetToken(existingAdmin.Id);
@@ -96,7 +95,7 @@ public class AdministratorRepositoryTests
     [Test]
     public async Task GetPasswordResetToken_ReturnsToken()
     {
-        var existingAdmin = CreateAdministrator();
+        var existingAdmin = AdministratorsTests.CreateAdmin();
 
         await _administratorRepository.CreateAdmin(existingAdmin);
 
@@ -114,7 +113,7 @@ public class AdministratorRepositoryTests
     [Test]
     public async Task RemovePasswordResetToken_RemovesToken()
     {
-        var existingAdmin = CreateAdministrator();
+        var existingAdmin = AdministratorsTests.CreateAdmin();
 
         await _administratorRepository.CreateAdmin(existingAdmin);
 
@@ -133,12 +132,12 @@ public class AdministratorRepositoryTests
     [Test]
     public async Task UpdateAdmin_UpdatesSuccessfully()
     {
-        var existingAdmin = CreateAdministrator();
+        var existingAdmin = AdministratorsTests.CreateAdmin();
         await _administratorRepository.CreateAdmin(existingAdmin);
 
         _context.Entry(existingAdmin).State = EntityState.Detached;
 
-        var updatedAdmin = UpdateAdministrator(existingAdmin.Id);
+        var updatedAdmin = AdministratorsTests.UpdateAdmin(existingAdmin.Id, "adminupdated@email.com");
 
         await _administratorRepository.UpdateAdmin(updatedAdmin);
         var retrievedUpdatedAdmin = await _administratorRepository.GetAdminById(existingAdmin.Id);
@@ -154,7 +153,7 @@ public class AdministratorRepositoryTests
     [Test]
     public async Task DeleteAdmin_DeletesSuccessfully()
     {
-        var existingAdmin = CreateAdministrator();
+        var existingAdmin = AdministratorsTests.CreateAdmin();
 
         await _administratorRepository.CreateAdmin(existingAdmin);
         await _administratorRepository.DeleteAdmin(existingAdmin.Id);
@@ -162,30 +161,4 @@ public class AdministratorRepositoryTests
 
         Assert.That(retrivedEmptyAdmin, Is.Null);
     }
-
-    #region Private Methods
-
-    private static Administrators CreateAdministrator()
-    {
-        return new Administrators()
-        {
-            Id = Guid.NewGuid(),
-            Name = "Admin Test",
-            Email = "admintest@email.com",
-            Password = PasswordHasherHelper.HashPassword("Admin@Test-123")
-        };
-    }
-
-    private static Administrators UpdateAdministrator(Guid id)
-    {
-        return new Administrators()
-        {
-            Id = id,
-            Name = "Admin Updated",
-            Email = "adminupdated@email.com",
-            Password = PasswordHasherHelper.HashPassword("Admin@Updated-123")
-        };
-    }
-
-    #endregion
 }

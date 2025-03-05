@@ -3,6 +3,7 @@ using StockFlow.Application.Helpers;
 using StockFlow.Application.Interfaces;
 using StockFlow.Application.Services;
 using StockFlow.Domain.Entities;
+using StockFlow.Tests.Templates;
 using System.Net;
 
 namespace StockFlow.Tests.Services;
@@ -23,7 +24,7 @@ public class SalesServiceTests
     [Test]
     public async Task GetSales_ReturnsSales()
     {
-        var sales = CreateSales();
+        var sales = SalesTests.CreateSales();
 
         _saleRepositoryMock.Setup(repo => repo.GetSales()).ReturnsAsync(sales);
 
@@ -47,7 +48,7 @@ public class SalesServiceTests
     [Test]
     public async Task GetSaleById_ReturnsSale()
     {
-        var sale = CreateSales().First();
+        var sale = SalesTests.CreateSales().First();
 
         _saleRepositoryMock.Setup(repo => repo.GetSaleById(sale.Id)).ReturnsAsync(sale);
 
@@ -80,7 +81,7 @@ public class SalesServiceTests
     [Test]
     public async Task CreateSale_CreatesSuccessfully()
     {
-        var sale = CreateSales().First();
+        var sale = SalesTests.CreateSales().First();
 
         _saleRepositoryMock.Setup(repo => repo.CreateSale(sale)).ReturnsAsync(sale);
 
@@ -99,8 +100,8 @@ public class SalesServiceTests
     [Test]
     public async Task UpdateSale_UpdatesSucessfully()
     {
-        var sale = CreateSales().First();
-        var updateSale = UpdateSale(sale.Id, sale.CustomerId);
+        var sale = SalesTests.CreateSales().First();
+        var updateSale = SalesTests.UpdateSale(sale.Id, sale.CustomerId);
 
         _saleRepositoryMock.Setup(repo => repo.CreateSale(sale)).ReturnsAsync(sale);
         _saleRepositoryMock.Setup(repo => repo.UpdateSale(sale)).Returns(Task.CompletedTask);
@@ -122,7 +123,7 @@ public class SalesServiceTests
     [Test]
     public async Task DeleteSale_DeletesSuccessfully()
     {
-        var sale = CreateSales().First();
+        var sale = SalesTests.CreateSales().First();
 
         _saleRepositoryMock.Setup(repo => repo.CreateSale(sale)).ReturnsAsync(sale);
         _saleRepositoryMock.Setup(repo => repo.DeleteSale(sale.Id)).Returns(Task.CompletedTask);
@@ -139,40 +140,4 @@ public class SalesServiceTests
             Assert.That(exception.Message, Is.EqualTo("Sale not found!"));
         });
     }
-
-    #region Private Methods
-
-    private static List<Sales> CreateSales()
-    {
-        return new List<Sales>()
-        {
-            new Sales()
-            {
-                Id = Guid.NewGuid(),
-                CustomerId = Guid.NewGuid(),
-                SaleDate = DateTime.UtcNow,
-                Total = 99.99m
-            },
-            new Sales()
-            {
-                Id = Guid.NewGuid(),
-                CustomerId = Guid.NewGuid(),
-                SaleDate = DateTime.UtcNow.AddDays(2),
-                Total = 129.99m
-            }
-        };
-    }
-
-    private static Sales UpdateSale(Guid id, Guid customerId)
-    {
-        return new Sales()
-        {
-            Id = id,
-            CustomerId = customerId,
-            SaleDate = DateTime.UtcNow.AddDays(3),
-            Total = 89.99m
-        };
-    }
-
-    #endregion
 }

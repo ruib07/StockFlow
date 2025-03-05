@@ -3,6 +3,7 @@ using StockFlow.Application.Helpers;
 using StockFlow.Application.Interfaces;
 using StockFlow.Application.Services;
 using StockFlow.Domain.Entities;
+using StockFlow.Tests.Templates;
 using System.Net;
 
 namespace StockFlow.Tests.Services;
@@ -23,7 +24,7 @@ public class CustomersServiceTests
     [Test]
     public async Task GetCustomers_ReturnsCustomers()
     {
-        var customers = CreateCustomers();
+        var customers = CustomersTests.CreateCustomers();
 
         _customerRepositoryMock.Setup(repo => repo.GetCustomers()).ReturnsAsync(customers);
 
@@ -51,7 +52,7 @@ public class CustomersServiceTests
     [Test]
     public async Task GetCustomerById_ReturnsCustomer()
     {
-        var customer = CreateCustomers().First();
+        var customer = CustomersTests.CreateCustomers().First();
 
         _customerRepositoryMock.Setup(repo => repo.GetCustomerById(customer.Id)).ReturnsAsync(customer);
 
@@ -86,7 +87,7 @@ public class CustomersServiceTests
     [Test]
     public async Task CreateCustomer_CreatesSuccessfully()
     {
-        var customer = CreateCustomers().First();
+        var customer = CustomersTests.CreateCustomers().First();
 
         _customerRepositoryMock.Setup(repo => repo.CreateCustomer(customer)).ReturnsAsync(customer);
 
@@ -107,7 +108,7 @@ public class CustomersServiceTests
     [Test]
     public void CreateCustomer_ReturnsConflict_WhenEmailAlreadyExists()
     {
-        var customer = CreateCustomers().First();
+        var customer = CustomersTests.CreateCustomers().First();
 
         _customerRepositoryMock.Setup(repo => repo.GetCustomerByEmail(customer.Email)).ReturnsAsync(customer);
 
@@ -123,8 +124,8 @@ public class CustomersServiceTests
     [Test]
     public async Task UpdateCustomer_UpdatesSuccessfully()
     {
-        var customer = CreateCustomers().First();
-        var updateCustomer = UpdateCustomer(customer.Id, "customerupdated@email.com");
+        var customer = CustomersTests.CreateCustomers().First();
+        var updateCustomer = CustomersTests.UpdateCustomer(customer.Id, "customerupdated@email.com");
 
         _customerRepositoryMock.Setup(repo => repo.CreateCustomer(customer)).ReturnsAsync(customer);
         _customerRepositoryMock.Setup(repo => repo.UpdateCustomer(updateCustomer)).Returns(Task.CompletedTask);
@@ -149,12 +150,12 @@ public class CustomersServiceTests
     public void UpdateCustomer_ReturnsConflict_WhenEmailAlreadyExists()
     {
         var customerId = Guid.NewGuid();
-        var existingCustomer = CreateCustomers().First();
+        var existingCustomer = CustomersTests.CreateCustomers().First();
         existingCustomer.Id = customerId;
         existingCustomer.Email = "customer1@email.com";
 
         var conflictingCustomer = new Customers() { Id = Guid.NewGuid(), Email = "customerupdated@email.com" };
-        var updateCustomer = UpdateCustomer(customerId, "customerupdated@email.com");
+        var updateCustomer = CustomersTests.UpdateCustomer(customerId, "customerupdated@email.com");
 
         _customerRepositoryMock.Setup(repo => repo.GetCustomerById(customerId)).ReturnsAsync(existingCustomer);
         _customerRepositoryMock.Setup(repo => repo.GetCustomerByEmail(updateCustomer.Email)).ReturnsAsync(conflictingCustomer);
@@ -171,7 +172,7 @@ public class CustomersServiceTests
     [Test]
     public async Task DeleteCustomer_DeletesSuccessfully()
     {
-        var customer = CreateCustomers().First();
+        var customer = CustomersTests.CreateCustomers().First();
 
         _customerRepositoryMock.Setup(repo => repo.CreateCustomer(customer)).ReturnsAsync(customer);
         _customerRepositoryMock.Setup(repo => repo.DeleteCustomer(customer.Id)).Returns(Task.CompletedTask);
@@ -188,46 +189,4 @@ public class CustomersServiceTests
             Assert.That(exception.Message, Is.EqualTo("Customer not found!"));
         });
     }
-
-    #region Private Methods
-
-    private static List<Customers> CreateCustomers()
-    {
-        return new List<Customers>()
-        {
-            new Customers()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Customer1 Test",
-                NIF = "123456789",
-                PhoneNumber = "918765432",
-                Email = "customer1test@email.com",
-                Address = "Customer1 Address"
-            },
-            new Customers()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Customer2 Test",
-                NIF = "987654321",
-                PhoneNumber = "965432178",
-                Email = "customer2test@email.com",
-                Address = "Customer2 Address"
-            }
-        };
-    }
-
-    private static Customers UpdateCustomer(Guid id, string email)
-    {
-        return new Customers()
-        {
-            Id = id,
-            Name = "Customer Updated",
-            NIF = "453215678",
-            PhoneNumber = "965432878",
-            Email = email,
-            Address = "Customer Updated Address"
-        };
-    }
-
-    #endregion
 }

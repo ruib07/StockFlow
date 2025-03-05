@@ -3,6 +3,7 @@ using StockFlow.Application.Helpers;
 using StockFlow.Application.Interfaces;
 using StockFlow.Application.Services;
 using StockFlow.Domain.Entities;
+using StockFlow.Tests.Templates;
 using System.Net;
 
 namespace StockFlow.Tests.Services;
@@ -23,7 +24,7 @@ public class PurchasesServiceTests
     [Test]
     public async Task GetPurchases_ReturnsPurchases()
     {
-        var purchases = CreatePurchases();
+        var purchases = PurchasesTests.CreatePurchases();
 
         _purchaseRepositoryMock.Setup(repo => repo.GetPurchases()).ReturnsAsync(purchases);
 
@@ -47,7 +48,7 @@ public class PurchasesServiceTests
     [Test]
     public async Task GetPurchaseById_ReturnsPurchase()
     {
-        var purchase = CreatePurchases().First();
+        var purchase = PurchasesTests.CreatePurchases().First();
 
         _purchaseRepositoryMock.Setup(repo => repo.GetPurchaseById(purchase.Id)).ReturnsAsync(purchase);
 
@@ -80,7 +81,7 @@ public class PurchasesServiceTests
     [Test]
     public async Task CreatePurchase_CreatesSuccessfully()
     {
-        var purchase = CreatePurchases().First();
+        var purchase = PurchasesTests.CreatePurchases().First();
 
         _purchaseRepositoryMock.Setup(repo => repo.CreatePurchase(purchase)).ReturnsAsync(purchase);
 
@@ -99,8 +100,8 @@ public class PurchasesServiceTests
     [Test]
     public async Task UpdatePurchase_UpdatesSucessfully()
     {
-        var purchase = CreatePurchases().First();
-        var updatePurchase = UpdatePurchase(purchase.Id, purchase.SupplierId);
+        var purchase = PurchasesTests.CreatePurchases().First();
+        var updatePurchase = PurchasesTests.UpdatePurchase(purchase.Id, purchase.SupplierId);
 
         _purchaseRepositoryMock.Setup(repo => repo.CreatePurchase(purchase)).ReturnsAsync(purchase);
         _purchaseRepositoryMock.Setup(repo => repo.UpdatePurchase(purchase)).Returns(Task.CompletedTask);
@@ -122,7 +123,7 @@ public class PurchasesServiceTests
     [Test]
     public async Task DeletePurchase_DeletesSuccessfully()
     {
-        var purchase = CreatePurchases().First();
+        var purchase = PurchasesTests.CreatePurchases().First();
 
         _purchaseRepositoryMock.Setup(repo => repo.CreatePurchase(purchase)).ReturnsAsync(purchase);
         _purchaseRepositoryMock.Setup(repo => repo.DeletePurchase(purchase.Id)).Returns(Task.CompletedTask);
@@ -139,40 +140,4 @@ public class PurchasesServiceTests
             Assert.That(exception.Message, Is.EqualTo("Purchase not found!"));
         });
     }
-
-    #region Private Methods
-
-    private static List<Purchases> CreatePurchases()
-    {
-        return new List<Purchases>()
-        {
-            new Purchases()
-            {
-                Id = Guid.NewGuid(),
-                SupplierId = Guid.NewGuid(),
-                PurchaseDate = DateTime.UtcNow,
-                Total = 99.99m
-            },
-            new Purchases()
-            {
-                Id = Guid.NewGuid(),
-                SupplierId = Guid.NewGuid(),
-                PurchaseDate = DateTime.UtcNow.AddDays(2),
-                Total = 129.99m
-            }
-        };
-    }
-
-    private static Purchases UpdatePurchase(Guid id, Guid supplierId)
-    {
-        return new Purchases()
-        {
-            Id = id,
-            SupplierId = supplierId,
-            PurchaseDate = DateTime.UtcNow.AddDays(3),
-            Total = 89.99m
-        };
-    }
-
-    #endregion
 }
