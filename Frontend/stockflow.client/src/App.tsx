@@ -7,6 +7,7 @@ import SignIn from "./pages/AuthPages/SignIn";
 import SignUp from "./pages/AuthPages/SignUp";
 import NotFound from "./pages/NotFound";
 import UserProfiles from "./pages/UserProfiles";
+import ProductsTable from "./pages/ProductsTable";
 
 export default function App() {
     return (
@@ -16,7 +17,9 @@ export default function App() {
                 <Route element={<AppLayout />}>
                     <Route index path="/" element={<Home />} />
 
-                    <Route path="/profile" element={<UserProfiles /> } />
+                    <Route path="/profile" element={<UserProfiles />} />
+
+                    <Route path="/products" element={<ProductsTable /> } />
 
                     <Route path="/signin" element={<SignIn />} />
                     <Route path="/signup" element={<SignUp />} />

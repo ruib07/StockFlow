@@ -1,31 +1,31 @@
 import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 import { useEffect, useState } from "react";
-import { GetSales } from "../../services/salesService";
+import { GetPurchases } from "../../services/purchasesService";
 
-export default function MonthlySalesChart() {
-    const [salesData, setSalesData] = useState<number[]>(Array(12).fill(0));
+export default function MonthlyPurchasesChart() {
+    const [purchasesData, setPurchasesData] = useState<number[]>(Array(12).fill(0));
     const [, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        const fetchSales = async () => {
+        const fetchPurchases = async () => {
             try {
-                const salesResponse = await GetSales();
-                const sales = salesResponse.data;
+                const purchasesResponse = await GetPurchases();
+                const purchases = purchasesResponse.data;
 
-                const monthlySales = Array(12).fill(0);
-                sales.forEach((sale: { saleDate: string }) => {
-                    const month = new Date(sale.saleDate).getMonth();
-                    monthlySales[month] += 1;
+                const monthlyPurchases = Array(12).fill(0);
+                purchases.forEach((purchase: { purchaseDate: string }) => {
+                    const month = new Date(purchase.purchaseDate).getMonth();
+                    monthlyPurchases[month] += 1;
                 });
 
-                setSalesData(monthlySales);
+                setPurchasesData(monthlyPurchases);
             } catch {
-                setError("Failed to load sales.");
+                setError("Failed to load purchases.");
             }
         };
 
-        fetchSales();
+        fetchPurchases();
     }, []);
 
     const options: ApexOptions = {
@@ -83,8 +83,8 @@ export default function MonthlySalesChart() {
     };
     const series = [
         {
-            name: "Sales",
-            data: salesData,
+            name: "Purchases",
+            data: purchasesData,
         },
     ];
 
@@ -92,7 +92,7 @@ export default function MonthlySalesChart() {
         <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
             <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-                    Monthly Sales
+                    Monthly Purchases
                 </h3>
             </div>
 
