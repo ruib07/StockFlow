@@ -5,6 +5,7 @@ import {
     ChevronDownIcon,
     GridIcon,
     HorizontaLDots,
+    PageIcon,
     PlugInIcon,
     UserCircleIcon,
 } from "../icons";
@@ -22,6 +23,16 @@ const navItems: NavItem[] = [
         icon: <GridIcon />,
         name: "Dashboard",
         path: "/",
+    },
+    {
+        name: "Pages",
+        icon: <PageIcon />,
+        subItems: [
+            { name: "Products", path: "/products", pro: false },
+            { name: "Categories", path: "/categories", pro: false },
+            { name: "Customers", path: "/customers", pro: false },
+            { name: "Suppliers", path: "/suppliers", pro: false },
+        ],
     },
     {
         icon: <UserCircleIcon />,
