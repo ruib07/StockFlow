@@ -17,7 +17,7 @@ public class EmailPasswordResetService : IEmailPasswordReset
 
     public async Task SendPasswordResetEmail(string email, string token)
     {
-        var resetLink = $"http://localhost:3000/RecoverPassword/ChangePassword?token={token}";
+        var resetLink = $"http://localhost:3000/change-password?token={token}";
         var fromAddress = new MailAddress(_configuration["EmailSettings:Username"], "StockFlow Support");
         var toAddress = new MailAddress(email);
 

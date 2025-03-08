@@ -16,6 +16,7 @@ export default function RecentProducts() {
     const [products, setProducts] = useState<IProduct[]>([]);
     const [categories, setCategories] = useState<ICategory[]>([]);
     const [, setError] = useState<string | null>(null);
+    const [expandedDescription, setExpandedDescription] = useState<string | null>(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -33,6 +34,10 @@ export default function RecentProducts() {
 
         fetchProductsAndCategories();
     }, []);
+
+    const handleToggleDescription = (productId: string) => {
+        setExpandedDescription((prev) => (prev === productId ? null : productId));
+    };
 
     return (
         <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">
@@ -104,7 +109,17 @@ export default function RecentProducts() {
                                         </div>
                                     </TableCell>
                                     <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                                        {product.description}
+                                        {expandedDescription === product.id
+                                            ? product.description
+                                            : `${product.description.substring(0, 70)}...`}
+                                        <button
+                                            className="text-blue-500 text-xs mt-2 cursor-pointer"
+                                            onClick={() => handleToggleDescription(product.id!)}
+                                        >
+                                            {expandedDescription === product.id
+                                                ? "Show less"
+                                                : "Show more"}
+                                        </button>
                                     </TableCell>
                                     <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                                         {category ? category.name : product.categoryId}

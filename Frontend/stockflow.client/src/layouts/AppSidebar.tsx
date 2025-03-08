@@ -15,7 +15,7 @@ type NavItem = {
     name: string;
     icon: React.ReactNode;
     path?: string;
-    subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[];
+    subItems?: { name: string; path: string; new?: boolean }[];
 };
 
 const navItems: NavItem[] = [
@@ -28,10 +28,12 @@ const navItems: NavItem[] = [
         name: "Pages",
         icon: <PageIcon />,
         subItems: [
-            { name: "Products", path: "/products", pro: false },
-            { name: "Categories", path: "/categories", pro: false },
-            { name: "Customers", path: "/customers", pro: false },
-            { name: "Suppliers", path: "/suppliers", pro: false },
+            { name: "Products", path: "/products" },
+            { name: "Categories", path: "/categories" },
+            { name: "Customers", path: "/customers" },
+            { name: "Suppliers", path: "/suppliers" },
+            { name: "Purchases", path: "/purchases" },
+            { name: "Sales", path: "/sales" },
         ],
     },
     {
@@ -46,8 +48,8 @@ const othersItems: NavItem[] = [
         icon: <PlugInIcon />,
         name: "Authentication",
         subItems: [
-            { name: "Sign In", path: "/signin", pro: false },
-            { name: "Sign Up", path: "/signup", pro: false },
+            { name: "Sign In", path: "/signin" },
+            { name: "Sign Up", path: "/signup" },
         ],
     },
 ];
