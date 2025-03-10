@@ -96,7 +96,7 @@ Products Page (Dark Mode):
 ![ProductsTable-DarkMode](https://github.com/user-attachments/assets/db3fa62a-5186-49e0-8276-14857b02cbbd)
 
 Products Page (Light Mode):
-![PurchasesTable-LightMode](https://github.com/user-attachments/assets/bbc4ba3f-8684-4c8b-84f6-85a0f90ba3ab)
+![ProductsTable-LightMode](https://github.com/user-attachments/assets/5a68b06b-3138-444a-ba28-beeb22205e09)
 
 Categories Page (Dark Mode):
 ![CategoriesTable-DarkMode](https://github.com/user-attachments/assets/360c9ae9-f338-4906-84d8-f2771be43502)
