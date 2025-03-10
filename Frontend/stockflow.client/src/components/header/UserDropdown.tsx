@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { DropdownItem } from "../ui/dropdown/DropdownItem";
-import { Dropdown } from "../ui/dropdown/Dropdown";
 import { Link } from "react-router";
 import { GetAdminById } from "../../services/administratorsService";
+import { Dropdown } from "../ui/dropdown/Dropdown";
+import { DropdownItem } from "../ui/dropdown/DropdownItem";
 
 export default function UserDropdown() {
     const [adminData, setAdminData] = useState<{ name: string; email: string } | null>(null);
@@ -49,6 +49,9 @@ export default function UserDropdown() {
         window.location.reload();
     };
 
+    if (!adminData) {
+        return null;
+    }
 
     return (
         <div className="relative">
@@ -56,11 +59,7 @@ export default function UserDropdown() {
                 onClick={toggleDropdown}
                 className="flex items-center text-gray-700 dropdown-toggle dark:text-gray-400"
             >
-                <span className="mr-3 overflow-hidden rounded-full h-11 w-11">
-                    <img src="/images/user/owner.jpg" alt="User" />
-                </span>
-
-                <span className="block mr-1 font-medium text-theme-sm">{adminData?.name.split(" ")[0]}</span>
+                <span className="block mr-1 font-medium text-theme-sm">{adminData?.name}</span>
                 <svg
                     className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
                     width="18"

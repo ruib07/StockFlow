@@ -2,8 +2,10 @@
 import { useNavigate } from "react-router-dom";
 import { IPurchase } from "../../@types/purchase";
 import { IPurchaseItem } from "../../@types/purchaseItem";
+import { CalenderIcon } from "../../icons";
 import { GetProducts } from "../../services/productsService";
 import { CreatePurchaseItem } from "../../services/purchaseItemsService";
+import { CreatePurchase } from "../../services/purchasesService";
 import { GetSuppliers } from "../../services/suppliersService";
 import { showErrorToast, showSuccessToast } from "../../utils/toastHelper";
 import ComponentCard from "../common/ComponentCard";
@@ -11,8 +13,6 @@ import Input from "../form/input/InputField";
 import Label from "../form/Label";
 import Select from "../form/Select";
 import Button from "../ui/button/Button";
-import { CreatePurchase } from "../../services/purchasesService";
-import { CalenderIcon } from "../../icons";
 
 export default function AddPurchase() {
     // Purchase Item
@@ -91,7 +91,7 @@ export default function AddPurchase() {
             await CreatePurchaseItem(newPurchaseItem);
             showSuccessToast();
 
-            navigate("/products");
+            navigate("/purchases");
         } catch {
             showErrorToast();
         }

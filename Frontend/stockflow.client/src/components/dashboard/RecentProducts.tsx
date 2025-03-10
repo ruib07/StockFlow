@@ -1,3 +1,9 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ICategory } from "../../@types/category";
+import { IProduct } from "../../@types/product";
+import { GetCategories } from "../../services/categoriesService";
+import { GetProducts } from "../../services/productsService";
 import {
     Table,
     TableBody,
@@ -5,12 +11,6 @@ import {
     TableHeader,
     TableRow,
 } from "../ui/table";
-import { useEffect, useState } from "react";
-import { IProduct } from "../../@types/product";
-import { GetProducts } from "../../services/productsService";
-import { ICategory } from "../../@types/category";
-import { GetCategories } from "../../services/categoriesService";
-import { useNavigate } from "react-router-dom";
 
 export default function RecentProducts() {
     const [products, setProducts] = useState<IProduct[]>([]);

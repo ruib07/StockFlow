@@ -91,7 +91,7 @@ export default function AddSale() {
             await CreateSaleItem(newSaleItem);
             showSuccessToast();
 
-            navigate("/products");
+            navigate("/sales");
         } catch {
             showErrorToast();
         }

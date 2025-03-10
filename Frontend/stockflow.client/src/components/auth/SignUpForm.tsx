@@ -1,12 +1,12 @@
-import { useState, FormEvent } from "react";
+import { FormEvent, useState } from "react";
 import { Link, useNavigate } from "react-router";
+import { ISignup } from "../../@types/authentication";
 import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "../../icons";
-import Label from "../form/Label";
-import Input from "../form/input/InputField";
-import Checkbox from "../form/input/Checkbox";
 import { Signup } from "../../services/authenticationsService";
 import { showErrorToast, showSuccessToast } from "../../utils/toastHelper";
-import { ISignup } from "../../@types/authentication";
+import Label from "../form/Label";
+import Checkbox from "../form/input/Checkbox";
+import Input from "../form/input/InputField";
 
 export default function SignUpForm() {
     const [name, setName] = useState("");

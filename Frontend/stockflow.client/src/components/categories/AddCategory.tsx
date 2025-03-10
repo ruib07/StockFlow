@@ -28,7 +28,7 @@ export default function AddCategory() {
     }
 
     return (
-        <ComponentCard title="Add Product">
+        <ComponentCard title="Add Category">
             <form onSubmit={handleCategoryCreation}>
                 <div className="space-y-6">
                     <div>

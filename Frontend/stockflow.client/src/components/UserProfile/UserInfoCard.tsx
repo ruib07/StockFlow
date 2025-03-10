@@ -1,8 +1,11 @@
 import { useAdmin } from "../../hooks/useAdmin";
 
-
 export default function UserInfoCard() {
-    const { admin } = useAdmin();
+    const { admin, error } = useAdmin();
+
+    if (error) {
+        return <p className="text-red-500">{error}</p>;
+    }
 
     return (
         <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">

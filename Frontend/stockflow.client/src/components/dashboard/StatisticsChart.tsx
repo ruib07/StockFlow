@@ -1,8 +1,8 @@
-import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
-import ChartTab from "../common/ChartTab";
 import { useEffect, useState } from "react";
+import Chart from "react-apexcharts";
 import { GetSales } from "../../services/salesService";
+import ChartTab from "../common/ChartTab";
 
 export default function StatisticsChart() {
     const [salesData, setSalesData] = useState<number[]>(Array(12).fill(0));

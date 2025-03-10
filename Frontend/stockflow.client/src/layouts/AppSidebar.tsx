@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
-
+import { useSidebar } from "../context/SidebarContext";
 import {
     ChevronDownIcon,
     GridIcon,
@@ -9,7 +9,6 @@ import {
     PlugInIcon,
     UserCircleIcon,
 } from "../icons";
-import { useSidebar } from "../context/SidebarContext";
 
 type NavItem = {
     name: string;
@@ -221,16 +220,6 @@ const AppSidebar: React.FC = () => {
                                                         new
                                                     </span>
                                                 )}
-                                                {subItem.pro && (
-                                                    <span
-                                                        className={`ml-auto ${isActive(subItem.path)
-                                                            ? "menu-dropdown-badge-active"
-                                                            : "menu-dropdown-badge-inactive"
-                                                            } menu-dropdown-badge`}
-                                                    >
-                                                        pro
-                                                    </span>
-                                                )}
                                             </span>
                                         </Link>
                                     </li>
@@ -305,7 +294,10 @@ const AppSidebar: React.FC = () => {
                                     <HorizontaLDots className="size-6" />
                                 )}
                             </h2>
-                            {renderMenuItems(navItems, "main")}
+                            {renderMenuItems(
+                                navItems.filter(nav => isAuthenticated || (nav.name !== "Pages" && nav.name !== "User Profile")),
+                                "main"
+                            )}
                         </div>
                         {!isAuthenticated && (
                             <div className="">

@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -7,28 +7,28 @@ import Home from "./pages/Home";
 
 import UserProfiles from "./pages/UserProfiles";
 
-import CategoriesTable from "./pages/Tables/CategoriesTable";
 import AddCategory from "./components/categories/AddCategory";
+import CategoriesTable from "./pages/Tables/CategoriesTable";
 
-import ProductsTable from "./pages/Tables/ProductsTable";
 import AddProduct from "./components/products/AddProduct";
+import ProductsTable from "./pages/Tables/ProductsTable";
 
-import PurchasesTable from "./pages/Tables/PurchasesTable";
 import AddPurchase from "./components/purchases/AddPurchase";
+import PurchasesTable from "./pages/Tables/PurchasesTable";
 
-import SalesTable from "./pages/Tables/SalesTable";
 import AddSale from "./components/sales/AddSale";
+import SalesTable from "./pages/Tables/SalesTable";
 
-import CustomersTable from "./pages/Tables/CustomersTable";
 import AddCustomer from "./components/customers/AddCustomer";
+import CustomersTable from "./pages/Tables/CustomersTable";
 
-import SuppliersTable from "./pages/Tables/SuppliersTable";
 import AddSupplier from "./components/suppliers/AddSupplier";
+import SuppliersTable from "./pages/Tables/SuppliersTable";
 
+import ChangePassword from "./components/recoverpassword/ChangePasswordForm";
+import RecoverPasswordEmail from "./components/recoverpassword/SendEmailForm";
 import SignIn from "./pages/AuthPages/SignIn";
 import SignUp from "./pages/AuthPages/SignUp";
-import RecoverPasswordEmail from "./components/recoverpassword/SendEmailForm";
-import ChangePassword from "./components/recoverpassword/ChangePasswordForm";
 
 import NotFound from "./pages/NotFound";
 

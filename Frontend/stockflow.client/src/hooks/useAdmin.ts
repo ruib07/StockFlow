@@ -3,8 +3,8 @@ import { IAdministrator } from "../@types/administrator";
 import { GetAdminById } from "../services/administratorsService";
 
 export function useAdmin() {
-    const [admin, setAdmin] = useState<IAdministrator>();
-    const [, setError] = useState<string | null>(null);
+    const [admin, setAdmin] = useState<IAdministrator | null>(null);
+    const [error, setError] = useState<string | null>(null);
 
     const adminId = localStorage.getItem("adminId") || sessionStorage.getItem("adminId");
 
@@ -18,13 +18,15 @@ export function useAdmin() {
             try {
                 const adminResponse = await GetAdminById(adminId!);
                 setAdmin(adminResponse.data);
+                setError(null);
             } catch {
                 setError("Failed to load admin data.");
+                setAdmin(null);
             }
         };
 
         fetchAdmin();
     }, [adminId]);
 
-    return { admin };
+    return { admin, error };
 }

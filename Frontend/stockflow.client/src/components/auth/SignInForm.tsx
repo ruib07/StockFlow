@@ -1,14 +1,14 @@
+import { jwtDecode } from "jwt-decode";
 import { FormEvent, useState } from "react";
 import { Link, useNavigate } from "react-router";
-import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "../../icons";
-import Label from "../form/Label";
-import Input from "../form/input/InputField";
-import Checkbox from "../form/input/Checkbox";
-import Button from "../ui/button/Button";
 import { ISignin } from "../../@types/authentication";
-import { showErrorToast } from "../../utils/toastHelper";
+import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "../../icons";
 import { Signin } from "../../services/authenticationsService";
-import { jwtDecode } from "jwt-decode";
+import { showErrorToast } from "../../utils/toastHelper";
+import Label from "../form/Label";
+import Checkbox from "../form/input/Checkbox";
+import Input from "../form/input/InputField";
+import Button from "../ui/button/Button";
 
 export default function SignInForm() {
     const [email, setEmail] = useState("");

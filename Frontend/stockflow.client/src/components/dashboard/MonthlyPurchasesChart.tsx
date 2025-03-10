@@ -1,6 +1,6 @@
-import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 import { useEffect, useState } from "react";
+import Chart from "react-apexcharts";
 import { GetPurchases } from "../../services/purchasesService";
 
 export default function MonthlyPurchasesChart() {
